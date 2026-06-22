@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gu. - resume | content operations</title>
+    <!-- 引入思源黑体 (Noto Sans SC) 偏细的字重 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100;300;400&display=swap" rel="stylesheet">
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans SC"', 'sans-serif'],
+                    },
+                    colors: {
+                        'gu-black': '#121212',
+                        'gu-gray': '#8e8e93',
+                        'gu-light-gray': '#eaeaea',
+                        'gu-red': '#ff0000' /* 正红色 */
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 隐藏滚动条并保持布局极简 */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+        
+        body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* 极简高级感过渡动效 */
+        .menu-transition {
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* 页面入场动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-element {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        /* 仅在桌面端且支持hover指针的设备上隐藏系统默认鼠标 */
+        @media (hover: hover) and (pointer: fine) {
+            body, a, button, [role="button"], .cursor-pointer, input, select, textarea, .interactive-card, .folder-tab {
+                cursor: none !important;
+            }
+        }
+
+        /* 自定义鼠标的过渡微调 */
+        #custom-cursor-dot {
+            transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+        }
+        #custom-cursor-ring {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* 隐藏滑动条样式 */
+        .scrollbar-none::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-none {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* 针对内部滚动条的苹果极简滚动轨道美化 */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #eaeaea;
+            border-radius: 99px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #8e8e93;
+        }
+
+        /* 爱心悬停弹动动效 */
+        @keyframes heartbeat-bounce {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.4); }
+            60% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+        .hover-bounce-heart {
+            display: inline-block;
+            transform-origin: center;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .hover-bounce-heart:hover {
+            animation: heartbeat-bounce 0.45s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-white text-gu-black antialiased font-light selection:bg-gu-red/10 selection:text-gu-red">
+
+    <!-- 自定义极简正红色毛玻璃鼠标元素 (仅在桌面端显示) -->
+    <div id="custom-cursor-dot" class="fixed w-[3px] h-[3px] bg-gu-red rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 opacity-0 hidden md:block"></div>
+    <div id="custom-cursor-ring" class="fixed w-9 h-9 border border-gu-red/20 bg-gu-red/5 backdrop-blur-[2px] rounded-full pointer-events-none z-[9998] -translate-x-1/2 -translate-y-1/2 opacity-0 hidden md:block"></div>
+
+    <!-- 首页 / Hero Section -->
+    <section id="home" class="relative w-full h-screen flex items-center justify-center fade-in-element">
+        
+        <!-- 右上角中英文切换 (已修复中英文切换交互，点下EN可触发英文模式，CN还原) -->
+        <div class="absolute top-8 right-8 md:top-12 md:right-12 text-sm tracking-widest text-gu-gray z-50 select-none">
+            <span id="lang-cn" onclick="setLanguage('cn')" class="text-gu-black cursor-pointer font-normal transition-colors">cn</span>
+            <span class="mx-1">/</span>
+            <span id="lang-en" onclick="setLanguage('en')" class="cursor-pointer hover:text-gu-black transition-colors">en</span>
+        </div>
+
+        <!-- 中心交互区域 -->
+        <div class="group relative flex flex-col items-center justify-center w-full max-md max-w-md cursor-default py-20">
+            
+            <!-- 标题组 (gu. 红色圆点) -->
+            <div class="text-center menu-transition group-hover:opacity-20 group-hover:scale-95">
+                <h1 class="text-6xl md:text-8xl font-thin tracking-[0.15em] mb-4 text-gu-black">
+                    gu<span class="text-gu-red">.</span>
+                </h1>
+                <p class="text-xs md:text-sm font-light tracking-[0.3em] uppercase text-gu-gray" data-cn="resume" data-en="resume">
+                    resume
+                </p>
+            </div>
+
+            <!-- 下拉目录 -->
+            <nav class="absolute top-[60%] flex flex-col items-center space-y-5 
+                        opacity-0 translate-y-8 pointer-events-none 
+                        menu-transition 
+                        group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto z-10">
+                <a href="#about" class="text-lg md:text-xl font-light tracking-wider text-gu-gray hover:text-gu-black hover:scale-105 transition-all duration-300" data-cn="about me" data-en="about me">
+                    about me
+                </a>
+                <a href="#skills" class="text-lg md:text-xl font-light tracking-wider text-gu-gray hover:text-gu-black hover:scale-105 transition-all duration-300" data-cn="skills" data-en="skills">
+                    skills
+                </a>
+                <a href="#experience" class="text-lg md:text-xl font-light tracking-wider text-gu-gray hover:text-gu-black hover:scale-105 transition-all duration-300" data-cn="experience" data-en="experience">
+                    experience
+                </a>
+                <a href="#project" class="text-lg md:text-xl font-light tracking-wider text-gu-gray hover:text-gu-black hover:scale-105 transition-all duration-300" data-cn="project" data-en="project">
+                    project
+                </a>
+                <a href="#contact" class="text-lg md:text-xl font-light tracking-wider text-gu-gray hover:text-gu-black hover:scale-105 transition-all duration-300" data-cn="contact me" data-en="contact me">
+                    contact me
+                </a>
+            </nav>
+            
+        </div>
+    </section>
+
+    <!-- about Me Section -->
+    <section id="about" class="min-h-screen w-full flex flex-col items-center justify-center px-6 py-28 border-t border-gu-light-gray/40">
+        <div class="max-w-6xl w-full">
+            
+            <!-- 顶部标题与提示性导视 (about me: 01) -->
+            <div class="flex flex-col md:flex-row justify-between items-start w-full mb-20 relative z-10">
+                <div class="flex items-start gap-2">
+                    <span class="text-xs font-light text-gu-gray mt-1 md:mt-2 tracking-widest">01</span>
+                    <h2 class="text-4xl md:text-5xl font-normal text-gu-black tracking-tight font-sans" data-cn="about me" data-en="about me">about me</h2>
+                </div>
+                <div class="mt-4 md:mt-0 text-left md:text-right relative max-w-xs md:self-end">
+                    <p class="text-xs md:text-sm text-gu-gray font-light leading-relaxed" id="about-sub">
+                        My background, education, and credentials<br>
+                        <span class="text-[11px] text-gu-gray/60">我的个人背景、教育经历与获奖经历</span>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 经典左右页面布局 -->
+            <div class="flex flex-col md:flex-row gap-12 md:gap-16 lg:gap-20 items-start justify-between">
+                
+                <!-- Left Section (已通过 md: 前缀修复手机端模糊问题。手机端默认清晰呈现，电脑端保留悬停清晰滤镜效果) -->
+                <div class="w-full md:w-[25%] max-w-[240px] shrink-0 flex flex-col items-start group">
+                    <div class="w-full aspect-[4/5] bg-gray-50 mb-2 overflow-hidden relative rounded-md">
+                        <img src="https://established-salmon-xy69tsbh.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-18%2016.03.42.png" 
+                             alt="GU." 
+                             class="w-full h-full object-cover md:blur-md md:group-hover:blur-none transition-all duration-[800ms] cubic-bezier(0.16, 1, 0.3, 1)" 
+                             onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=800'">
+                    </div>
+                    
+                    <div class="space-y-0.5 text-left w-full pl-1">
+                        <p class="text-sm font-light tracking-wide text-gu-black">HI，    : )</p>
+                        <p class="text-xs font-light text-gu-gray tracking-wide">here is</p>
+                        <h3 class="text-2xl font-normal text-gu-black tracking-wide font-sans leading-tight mt-0.5" data-cn="顾润红" data-en="Runhong Gu">顾润红</h3>
+                        <p class="text-xs font-light text-gu-black tracking-[0.12em] uppercase font-sans">GURUNHONG</p>
+                    </div>
+                </div>
+
+                <!-- Right Side Information Grid -->
+                <div class="w-full md:w-[70%] grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-12">
+                    
+                    <!-- [右侧left列]：EDUCATION & PROFILE -->
+                    <div class="space-y-12">
+                        <!-- 1. EDUCATION -->
+                        <div class="space-y-4">
+                            <h4 class="text-base md:text-lg tracking-[0.05em] font-normal uppercase text-gu-gray" data-cn="education" data-en="education">education</h4>
+                            <div class="text-xs md:text-[13px] text-gu-gray font-light leading-relaxed space-y-4">
+                                <div class="space-y-0.5">
+                                    <span class="text-gu-black block font-normal" data-cn="北京服装学院" data-en="Beijing Institute of Fashion Technology">北京服装学院</span>
+                                    <span class="text-gu-gray block" data-cn="硕士 · 数字媒体艺术专业" data-en="Master of Digital Media Art">硕士 · 数字媒体艺术专业</span>
+                                    <span class="text-[11px] text-gu-gray/60 block">2022.09 - 2025.07</span>
+                                </div>
+                                <div class="space-y-0.5">
+                                    <span class="text-gu-black block font-normal" data-cn="鲁迅美术学院" data-en="LuXun Academy of Fine Arts">鲁迅美术学院</span>
+                                    <span class="text-gu-gray block" data-cn="学士 · 数字媒体艺术专业" data-en="Bachelor of Digital Media Art">学士 · 数字媒体艺术专业</span>
+                                    <span class="text-[11px] text-gu-gray/60 block">2018.09 - 2022.07</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. PROFILE -->
+                        <div class="space-y-4">
+                            <h4 class="text-base md:text-lg tracking-[0.05em] font-normal uppercase text-gu-gray" data-cn="profile" data-en="profile">profile</h4>
+                            <div class="text-xs md:text-[13px] text-gu-gray font-light leading-relaxed space-y-2">
+                                <p class="flex"><span class="w-16 text-gu-black">Birth</span>2000.08.07</p>
+                                <p class="flex"><span class="w-16 text-gu-black">Gender</span><span id="profile-gender">女</span></p>
+                                <p class="flex"><span class="w-16 text-gu-black">City</span><span id="profile-city">广州</span></p>
+                                <p class="text-xs text-gu-gray/80 pt-2 leading-relaxed" id="profile-desc">
+                                    擅长用敏锐的审美进行视觉传达，用清晰的数据思维驱动内容增长。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- [右侧right列]：ACADEMIC HONORS & LANGUAGES -->
+                    <div class="space-y-12">
+                        <!-- 3. ACADEMIC HONORS -->
+                        <div class="space-y-4">
+                            <h4 class="text-base md:text-lg tracking-[0.05em] font-normal uppercase text-gu-gray" data-cn="academic honors" data-en="academic honors">academic honors</h4>
+                            <div id="academic-list" class="text-xs md:text-[13px] text-gu-gray font-light leading-relaxed space-y-2">
+                                <p>2022 设计马拉松大赛 · 银奖</p>
+                                <p>NCDA 全国高校数字艺术大赛 · 三等奖</p>
+                                <p>全国大学生广告艺术大赛 · 全国优秀奖</p>
+                                <p>汉仪第四届字体之星设计大赛 · 入围奖</p>
+                                <p>方正第十届字体设计大赛 · 入围奖</p>
+                                <p>北京服装学院 · 一等奖学金</p>
+                                <p>鲁迅美术学院 · 三等奖学金</p>
+                            </div>
+                        </div>
+
+                        <!-- 4. LANGUAGES -->
+                        <div class="space-y-4">
+                            <h4 class="text-base md:text-lg tracking-[0.05em] font-normal uppercase text-gu-gray" data-cn="languages" data-en="languages">languages</h4>
+                            <div class="text-xs md:text-[13px] text-gu-gray font-light leading-relaxed">
+                                <p class="text-gu-black mb-1" id="lang-title">英语 (English)</p>
+                                <p id="lang-desc">听说读写良好 · CET-6 (591 分)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="min-h-screen w-full flex flex-col items-center justify-center px-6 py-28 border-t border-gu-light-gray/40 relative overflow-hidden bg-white">
+        <div class="max-w-6xl w-full flex flex-col justify-between h-full relative">
+            
+            <!-- 顶部标题与提示性导视 (Skills: 02) -->
+            <div class="flex flex-col md:flex-row justify-between items-start w-full mb-8 relative z-10">
+                <div class="flex items-start gap-2">
+                    <span class="text-xs font-light text-gu-gray mt-1 md:mt-2 tracking-widest">02</span>
+                    <h2 class="text-4xl md:text-5xl font-normal text-gu-black tracking-tight font-sans">skills</h2>
+                </div>
+                
+                <!-- 右上角提示词与极简手绘引导箭头 -->
+                <div class="mt-4 md:mt-0 text-left md:text-right relative max-w-xs md:self-end pr-8">
+                    <p class="text-xs md:text-sm text-gu-gray font-light leading-relaxed">
+                        Select a capability card below to explore my professional skills<br>
+                        <span class="text-[11px] text-gu-gray/60">选择下方能力模块，探索我的专业技能积淀</span>
+                    </p>
+                    <!-- 极简线条感手绘 SVG 箭头 -->
+                    <svg class="absolute right-0 -bottom-10 w-16 h-12 text-gu-gray/60 hidden md:block" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 10 C 35 45, 65 45, 80 80" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 3" fill="none" />
+                        <path d="M72 78 L80 80 L78 72" stroke="currentColor" stroke-width="1.2" fill="none" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- MacBook 电子样机区域 (已升级为完全流式百分比及宽高比缩放，支持在各种屏幕尺寸无极自适应) -->
+            <div class="w-full flex justify-center py-6 relative z-10 px-4">
+                <div class="relative w-full max-w-[500px]">
+                    <!-- 1. 笔记本屏幕 -->
+                    <div class="relative mx-auto w-full aspect-[1.65/1] bg-[#1d1d1f] rounded-t-2xl p-[1.5%] shadow-lg border border-neutral-800 transition-all duration-500">
+                        <div class="w-full h-full bg-white rounded-lg p-[5%] flex flex-col justify-center overflow-hidden relative shadow-inner">
+                            <div id="laptop-screen-content" class="w-full flex flex-col justify-center transition-opacity duration-300">
+                                <div class="space-y-2 md:space-y-3">
+                                    <div class="flex items-center space-x-2 text-gu-red">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-gu-red"></span>
+                                        <span class="text-[9px] md:text-[10px] uppercase tracking-[0.2em] font-medium" id="skill-category-en">creative tools</span>
+                                    </div>
+                                    <h3 class="text-sm sm:text-base md:text-lg font-normal text-gu-black tracking-wide" id="skill-category-cn">个人能力</h3>
+                                    <p class="text-[10px] sm:text-xs text-gu-gray text-justify leading-relaxed max-w-sm md:max-w-md font-light" id="skill-category-desc">
+                                        我具备设计思维、用户洞察能力以及内容表达和跨团队协作能力。希望转向内容运营方向，把设计经验和对用户需求的理解结合起来，做更有传播和用户价值的内容。
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="absolute bottom-2 right-4 text-[9px] text-gu-gray/20 font-mono select-none">BIFT & LUA DESIGN LAB</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 2. 笔记本底座与转轴 -->
+                    <div class="relative w-[112%] -left-[6%] h-[8px] sm:h-[10px] bg-[#d2d2d7] rounded-b-xl shadow-md border-t border-neutral-300">
+                        <div class="mx-auto w-[15%] h-[3px] bg-neutral-400 rounded-b-sm"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 圆角能力卡片容器 (自适应缩放间距，并在大屏上居中对齐，与流式 MacBook 尺寸完美契合) -->
+            <div class="relative w-full -mt-12 sm:-mt-16 md:-mt-20 lg:-mt-24 z-20">
+                <div id="skills-slider" class="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-none px-6 py-4 cursor-grab active:cursor-grabbing justify-start md:justify-center">
+                    
+                    <!-- 卡片 1 -->
+                    <div onclick="switchSkill('personal', 0)" class="skill-card snap-center shrink-0 w-[140px] sm:w-[160px] md:w-[180px] lg:w-[200px] aspect-[4/5] sm:aspect-square bg-white/95 border border-neutral-200/50 shadow-md hover:shadow-lg rounded-2xl p-4 sm:p-5 flex flex-col items-center justify-between transition-all duration-500 cursor-pointer active-skill-card relative" data-idx="0">
+                        <div class="flex-1 flex items-center justify-center w-full min-h-0 relative overflow-hidden rounded-xl bg-neutral-50/40 group/icon" id="card-icon-container-0">
+                            <img src="https://coloured-chocolate-mcksu45h.edgeone.dev/%E4%BA%AB%E4%B9%90%E4%B8%BB%E4%B9%89%E4%B8%8A%E8%89%B2%201.png" alt="创作工具" class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain transition-all duration-500 group-hover/icon:scale-75 group-hover/icon:opacity-0" onerror="this.src='https://via.placeholder.com/100?text=Tools'">
+                            <div class="absolute inset-0 p-3 flex items-center justify-center bg-white/95 backdrop-blur-md opacity-0 group-hover/icon:opacity-100 transition-all duration-500 rounded-xl text-center border border-gu-red/10">
+                                <p class="text-[10px] sm:text-[11px] md:text-xs font-normal text-gu-black leading-relaxed">视觉设计、手绘插画、三维建模、视频剪辑等。</p>
+                            </div>
+                        </div>
+                        <div class="text-center mt-2">
+                            <span class="text-[9px] text-gu-gray tracking-wider uppercase block mb-0.5">01 / creative</span>
+                            <span class="text-sm font-medium text-gu-black block">创作工具</span>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 2 -->
+                    <div onclick="switchSkill('aigc', 1)" class="skill-card snap-center shrink-0 w-[140px] sm:w-[160px] md:w-[180px] lg:w-[200px] aspect-[4/5] sm:aspect-square bg-white/95 border border-neutral-200/50 shadow-md hover:shadow-lg rounded-2xl p-4 sm:p-5 flex flex-col items-center justify-between transition-all duration-500 cursor-pointer relative" data-idx="1">
+                        <div class="flex-1 flex items-center justify-center w-full min-h-0 relative overflow-hidden rounded-xl bg-neutral-50/40 group/icon" id="card-icon-container-1">
+                            <img src="https://wandering-orange-4czymrvn.edgeone.dev/%E8%B0%83%E6%95%B4%20%E8%A7%82%E5%AF%9F%201.png" alt="AIGC 协同" class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain transition-all duration-500 group-hover/icon:scale-75 group-hover/icon:opacity-0" onerror="this.src='https://via.placeholder.com/100?text=AI'">
+                            <div class="absolute inset-0 p-3 flex items-center justify-center bg-white/95 backdrop-blur-md opacity-0 group-hover/icon:opacity-100 transition-all duration-500 rounded-xl text-center border border-gu-red/10">
+                                <p class="text-[10px] sm:text-[11px] md:text-xs font-normal text-gu-black leading-relaxed">熟练使用各类 AI 生图 / 声音视频工具，搭建 ComfyUI 自动化内容工作流，批量产出视觉素材。</p>
+                            </div>
+                        </div>
+                        <div class="text-center mt-2">
+                            <span class="text-[9px] text-gu-gray tracking-wider uppercase block mb-0.5">02 / ai synergy</span>
+                            <span class="text-sm font-medium text-gu-black block">AIGC 协同</span>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 3 -->
+                    <div onclick="switchSkill('operations', 2)" class="skill-card snap-center shrink-0 w-[140px] sm:w-[160px] md:w-[180px] lg:w-[200px] aspect-[4/5] sm:aspect-square bg-white/95 border border-neutral-200/50 shadow-md hover:shadow-lg rounded-2xl p-4 sm:p-5 flex flex-col items-center justify-between transition-all duration-500 cursor-pointer relative" data-idx="2">
+                        <div class="flex-1 flex items-center justify-center w-full min-h-0 relative overflow-hidden rounded-xl bg-neutral-50/40 group/icon" id="card-icon-container-2">
+                            <img src="https://courageous-blue-pzomky5p.edgeone.dev/%E5%AE%8C%E7%BE%8E%E4%B8%BB%E4%B9%89%E4%B8%8A%E8%89%B2%201.png" alt="运营能力" class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain transition-all duration-500 group-hover/icon:scale-75 group-hover/icon:opacity-0" onerror="this.src='https://via.placeholder.com/100?text=Operations'">
+                            <div class="absolute inset-0 p-3 flex items-center justify-center bg-white/95 backdrop-blur-md opacity-0 group-hover/icon:opacity-100 transition-all duration-500 rounded-xl text-center border border-gu-red/10">
+                                <p class="text-[10px] sm:text-[11px] md:text-xs font-normal text-gu-black leading-relaxed">内容策划、短视频脚本 / 剪辑、用户调研、内容数据复盘、品牌宣传物料统筹。</p>
+                            </div>
+                        </div>
+                        <div class="text-center mt-2">
+                            <span class="text-[9px] text-gu-gray tracking-wider uppercase block mb-0.5">03 / operations</span>
+                            <span class="text-sm font-medium text-gu-black block">运营能力</span>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 4 -->
+                    <div onclick="switchSkill('general', 3)" class="skill-card snap-center shrink-0 w-[140px] sm:w-[160px] md:w-[180px] lg:w-[200px] aspect-[4/5] sm:aspect-square bg-white/95 border border-neutral-200/50 shadow-md hover:shadow-lg rounded-2xl p-4 sm:p-5 flex flex-col items-center justify-between transition-all duration-500 cursor-pointer relative" data-idx="3">
+                        <div class="flex-1 flex items-center justify-center w-full min-h-0 relative overflow-hidden rounded-xl bg-neutral-50/40 group/icon" id="card-icon-container-3">
+                            <img src="https://jolly-purple-he6uvxli.edgeone.dev/%E5%92%8C%E5%B9%B3%E4%B8%BB%E4%B9%89%E4%B8%8A%E8%89%B2%201.png" alt="通用能力" class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain transition-all duration-500 group-hover/icon:scale-75 group-hover/icon:opacity-0" onerror="this.src='https://via.placeholder.com/100?text=General'">
+                            <div class="absolute inset-0 p-3 flex items-center justify-center bg-white/95 backdrop-blur-md opacity-0 group-hover/icon:opacity-100 transition-all duration-500 rounded-xl text-center border border-gu-red/10">
+                                <p class="text-[10px] sm:text-[11px] md:text-xs font-normal text-gu-black leading-relaxed">跨部门项目统筹、竞品内容分析、活动资源协调、相关文档撰写。</p>
+                            </div>
+                        </div>
+                        <div class="text-center mt-2">
+                            <span class="text-[9px] text-gu-gray tracking-wider uppercase block mb-0.5">04 / general</span>
+                            <span class="text-sm font-medium text-gu-black block">通用能力</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="flex justify-center space-x-2 mt-4">
+                    <span class="w-1.5 h-1.5 rounded-full transition-colors duration-300 skill-dot bg-gu-red" id="dot-0"></span>
+                    <span class="w-1.5 h-1.5 rounded-full transition-colors duration-300 skill-dot bg-neutral-200" id="dot-1"></span>
+                    <span class="w-1.5 h-1.5 rounded-full transition-colors duration-300 skill-dot bg-neutral-200" id="dot-2"></span>
+                    <span class="w-1.5 h-1.5 rounded-full transition-colors duration-300 skill-dot bg-neutral-200" id="dot-3"></span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Experience Section (重构为 Apple 风格的互动式多时间线面板) -->
+    <section id="experience" class="min-h-screen w-full flex flex-col items-center justify-center px-6 py-28 border-t border-gu-light-gray/40 bg-gray-50/10 relative overflow-hidden">
+        <div class="max-w-6xl w-full flex flex-col justify-between h-full relative z-10">
+            
+            <!-- 顶部标题与提示性导视 (experience: 03) -->
+            <div class="flex flex-col md:flex-row justify-between items-start w-full mb-16 relative z-10">
+                <div class="flex items-start gap-2">
+                    <span class="text-xs font-light text-gu-gray mt-1 md:mt-2 tracking-widest">03</span>
+                    <h2 class="text-4xl md:text-5xl font-normal text-gu-black tracking-tight font-sans">experience</h2>
+                </div>
+                <div class="mt-4 md:mt-0 text-left md:text-right relative max-w-xs md:self-end">
+                    <p class="text-xs md:text-sm text-gu-gray font-light leading-relaxed">
+                        My career journey in product and creation<br>
+                        <span class="text-[11px] text-gu-gray/60">我的职业历程与实习经历沉淀</span>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 桌面端及平板经典布局 -->
+            <div class="hidden md:flex gap-12 items-start justify-between min-h-[460px]">
+                
+                <!-- left侧公司极简标签栏 (已经保留left边栏浅灰色职位名称旁的“· 实习”小字) -->
+                <div class="w-[32%] flex flex-col space-y-3 shrink-0 border-l border-neutral-100">
+                    
+                    <!-- 凡岛网络 -->
+                    <button onclick="switchExperience(0)" class="exp-nav-item text-left pl-6 py-4 border-l-2 -ml-[1.5px] border-transparent hover:border-neutral-300 hover:text-gu-black transition-all duration-300 group active-exp-nav" id="exp-nav-0">
+                        <span class="text-[10px] text-gu-gray tracking-wider block font-sans uppercase mb-1">2025.07 - 2026.03</span>
+                        <span class="text-sm font-medium block group-hover:translate-x-1 transition-transform duration-300">广州凡岛网络科技</span>
+                        <span class="text-xs text-gu-gray block">产品设计管培生</span>
+                    </button>
+
+                    <!-- 猫眼娱乐 -->
+                    <button onclick="switchExperience(1)" class="exp-nav-item text-left pl-6 py-4 border-l-2 -ml-[1.5px] border-transparent hover:border-neutral-300 hover:text-gu-black transition-all duration-300 group" id="exp-nav-1">
+                        <span class="text-[10px] text-gu-gray tracking-wider block font-sans uppercase mb-1">2025.04 - 2025.06</span>
+                        <span class="text-sm font-medium block group-hover:translate-x-1 transition-transform duration-300">北京猫眼文化传媒</span>
+                        <span class="text-xs text-gu-gray block">AI内容生产设计师 · 实习</span>
+                    </button>
+
+                    <!-- 一点网聚 -->
+                    <button onclick="switchExperience(2)" class="exp-nav-item text-left pl-6 py-4 border-l-2 -ml-[1.5px] border-transparent hover:border-neutral-300 hover:text-gu-black transition-all duration-300 group" id="exp-nav-2">
+                        <span class="text-[10px] text-gu-gray tracking-wider block font-sans uppercase mb-1">2024.07 - 2024.11</span>
+                        <span class="text-sm font-medium block group-hover:translate-x-1 transition-transform duration-300">北京一点网聚信息</span>
+                        <span class="text-xs text-gu-gray block">UI设计师 · 实习</span>
+                    </button>
+
+                    <!-- 字节跳动 -->
+                    <button onclick="switchExperience(3)" class="exp-nav-item text-left pl-6 py-4 border-l-2 -ml-[1.5px] border-transparent hover:border-neutral-300 hover:text-gu-black transition-all duration-300 group" id="exp-nav-3">
+                        <span class="text-[10px] text-gu-gray tracking-wider block font-sans uppercase mb-1">2023.07 - 2023.12</span>
+                        <span class="text-sm font-medium block group-hover:translate-x-1 transition-transform duration-300">北京字节跳动科技</span>
+                        <span class="text-xs text-gu-gray block">AIGC高美感设计师 · 实习</span>
+                    </button>
+
+                    <!-- 忆空间 -->
+                    <button onclick="switchExperience(4)" class="exp-nav-item text-left pl-6 py-4 border-l-2 -ml-[1.5px] border-transparent hover:border-neutral-300 hover:text-gu-black transition-all duration-300 group" id="exp-nav-4">
+                        <span class="text-[10px] text-gu-gray tracking-wider block font-sans uppercase mb-1">2023.03 - 2023.06</span>
+                        <span class="text-sm font-medium block group-hover:translate-x-1 transition-transform duration-300">北京忆空间文化发展</span>
+                        <span class="text-xs text-gu-gray block">产品运营设计 · 实习</span>
+                    </button>
+
+                </div>
+
+                <!-- 右侧看板 -->
+                <div class="w-[64%] bg-white/40 backdrop-blur-sm border border-neutral-100 rounded-3xl p-8 lg:p-10 flex flex-col justify-between shadow-sm relative overflow-hidden h-[460px]">
+                    <div id="exp-detail-board" class="w-full h-full flex flex-col justify-between transition-opacity duration-300">
+                        <div class="space-y-6 flex-1 flex flex-col min-h-0">
+                            <div class="flex justify-between items-start gap-4 shrink-0">
+                                <div class="space-y-1.5 min-w-0 flex-1">
+                                    <h3 class="text-xl lg:text-2xl font-normal text-gu-black font-sans leading-snug" id="exp-detail-role">产品设计管培生</h3>
+                                    <p class="text-sm text-gu-gray font-light leading-relaxed" id="exp-detail-company">广州凡岛网络科技有限公司</p>
+                                </div>
+                                <span class="text-xs text-gu-red bg-gu-red/5 px-3 py-1.5 rounded-full font-light tracking-wider whitespace-nowrap shrink-0 ml-4" id="exp-detail-period">2025.07 - 2026.03</span>
+                            </div>
+
+                            <div class="flex-1 min-h-0 overflow-y-auto pr-1.5 custom-scrollbar" id="exp-detail-desc-container">
+                                <ul class="space-y-3.5 text-sm text-gu-gray font-light leading-relaxed max-w-2xl" id="exp-detail-desc">
+                                    <li class="flex items-start gap-2.5">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-2 shrink-0"></span>
+                                        <span>统筹新品牌整体品牌策划与新品营销，负责新品打造、老品升级全流程，输出 brand 传播物料供给线上渠道；</span>
+                                    </li>
+                                    <li class="flex items-start gap-2.5">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-2 shrink-0"></span>
+                                        <span>牵头线上线下竞品与消费者调研，拆解竞品开品与营销打法，输出 analysis 报告支撑品牌内容与产品策划；</span>
+                                    </li>
+                                    <li class="flex items-start gap-2.5">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-2 shrink-0"></span>
+                                        <span>协同产品经理落地新品上市方案，提炼产品种草卖点，适配新媒体、电商宣传需求；</span>
+                                    </li>
+                                    <li class="flex items-start gap-2.5">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-2 shrink-0"></span>
+                                        <span>以项目负责人统筹团队排期与任务分配，管控项目节点并沉淀标准化 brand 内容素材库。</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-neutral-100 shrink-0" id="exp-highlights">
+                            <span class="px-3 py-1 text-xs text-gu-red bg-gu-red/5 rounded-full">品牌策划</span>
+                            <span class="px-3 py-1 text-xs text-neutral-500 bg-neutral-50 rounded-full">新品营销</span>
+                            <span class="px-2.5 py-1 text-xs text-neutral-500 bg-neutral-50 rounded-full">竞品调研</span>
+                            <span class="px-2.5 py-1 text-[11px] text-neutral-500 bg-neutral-50 rounded-full">项目统筹</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 移动端手势自适应布局 -->
+            <div class="md:hidden flex flex-col space-y-4 w-full">
+                <div class="bg-gray-50/50 rounded-2xl border border-neutral-100 overflow-hidden transition-all duration-300">
+                    <button onclick="toggleMobileExp(0)" class="w-full text-left px-5 py-4 flex justify-between items-center focus:outline-none">
+                        <div class="min-w-0 pr-4">
+                            <span class="text-[9px] text-gu-gray/60 block mb-1">2025.07 - 2026.03</span>
+                            <span class="text-sm font-medium text-gu-black block truncate">广州凡岛网络科技</span>
+                        </div>
+                        <svg id="m-arrow-0" class="w-4 h-4 text-gu-gray transition-transform duration-300 transform rotate-180 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div id="m-content-0" class="px-5 pb-5 space-y-4 transition-all duration-300">
+                        <p class="text-xs text-gu-red font-medium">产品设计管培生</p>
+                        <ul class="space-y-2 text-xs text-gu-gray leading-relaxed font-light">
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>统筹新品牌整体品牌策划与新品营销，负责新品打造、老品升级全流程，输出 brand 传播物料供给线上渠道；</li>
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>牵头线上线下竞品与消费者调研，拆解竞品开品与营销打法，输出分析报告支撑品牌内容与产品策划；</li>
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>协同产品经理落地新品上市方案，提炼产品种草卖点，适配新媒体、电商宣传需求；</li>
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>以项目负责人统筹团队排期与任务分配，管控项目节点并沉淀标准化品牌内容素材库。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50/50 rounded-2xl border border-neutral-100 overflow-hidden transition-all duration-300">
+                    <button onclick="toggleMobileExp(1)" class="w-full text-left px-5 py-4 flex justify-between items-center focus:outline-none">
+                        <div class="min-w-0 pr-4">
+                            <span class="text-[9px] text-gu-gray/60 block mb-1">2025.04 - 2025.06</span>
+                            <span class="text-sm font-medium text-gu-black block truncate">北京猫眼文化传媒</span>
+                        </div>
+                        <svg id="m-arrow-1" class="w-4 h-4 text-gu-gray transition-transform duration-300 transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div id="m-content-1" class="px-5 pb-5 space-y-4 transition-all duration-300 hidden">
+                        <p class="text-xs text-gu-red font-medium">AI内容生产设计师</p>
+                        <ul class="space-y-2 text-xs text-gu-gray leading-relaxed font-light">
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>出海教育产品的内容生产制作：利用 AIGC 工具批量产出海外教育产品的图文、短视频素材，提升内容产出效率；</li>
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>搭建与维护自动化 AIGC 内容工作流，标准化视频、图文产出流程，降低内容制作人力成本，稳定供给产品素材。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50/50 rounded-2xl border border-neutral-100 overflow-hidden transition-all duration-300">
+                    <button onclick="toggleMobileExp(2)" class="w-full text-left px-5 py-4 flex justify-between items-center focus:outline-none">
+                        <div class="min-w-0 pr-4">
+                            <span class="text-[9px] text-gu-gray/60 block mb-1">2024.07 - 2024.11</span>
+                            <span class="text-sm font-medium text-gu-black block truncate">北京一点网聚信息</span>
+                        </div>
+                        <svg id="m-arrow-2" class="w-4 h-4 text-gu-gray transition-transform duration-300 transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div id="m-content-2" class="px-5 pb-5 space-y-4 transition-all duration-300 hidden">
+                        <p class="text-xs text-gu-red font-medium">UI设计师 <span class="text-[11px] text-gu-gray font-light">· 北京一点网聚信息技术有限公司 · 产品部</span></p>
+                        <ul class="space-y-2 text-xs text-gu-gray leading-relaxed font-light">
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>用户调研与内容触点 analysis：针对社交类产品开展用户行为调研、竞品内容生态拆解，分析用户活跃、流失核心原因，输出 product 优化方案；</li>
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>产品体验优化: 优化 APP 内弹窗、社区封面、个人主页等用户视觉触点内容，提升社区内容点击率与用户停留时长；</li>
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>定期复盘产品及竞品数据，新功能体验评估、迭代内容展示、用户激励视觉方案，提升社区 UGC 发布活跃度.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50/50 rounded-2xl border border-neutral-100 overflow-hidden transition-all duration-300">
+                    <button onclick="toggleMobileExp(3)" class="w-full text-left px-5 py-4 flex justify-between items-center focus:outline-none">
+                        <div class="min-w-0 pr-4">
+                            <span class="text-[9px] text-gu-gray/60 block mb-1">2023.07 - 2023.12</span>
+                            <span class="text-sm font-medium text-gu-black block truncate">北京字节跳动科技</span>
+                        </div>
+                        <svg id="m-arrow-3" class="w-4 h-4 text-gu-gray transition-transform duration-300 transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div id="m-content-3" class="px-5 pb-5 space-y-4 transition-all duration-300 hidden">
+                        <p class="text-xs text-gu-red font-medium">AIGC高美感设计师 <span class="text-[11px] text-gu-gray font-light">· 北京字节跳动科技有限公司 · 中国内容质量与用户体验平台</span></p>
+                        <ul class="space-y-2 text-xs text-gu-gray leading-relaxed font-light">
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>内容 & 受众调研：针对 platform AIGC 内容赛道开展竞品内容拆解、受众画像与用户痛点分析，输出 content 趋势报告，为 platform 内容运营策略提供参考；</li>
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>内容标准搭建：协同产研团队搭建美学规范与分层标签体系，从 0-1 搭建内容素材数据库与使用手册，统一平台内容产出标准，提升内容产出效率；</li>
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>跨团队协同运营：联动研发、测试、设计团队推进内容体验迭代，跟踪用户反馈优化内容生成效果，降低用户内容差评率；</li>
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>项目统筹管理：跟进项目排期、风险管控，同步各团队内容迭代需求，保障月度内容更新计划按时落地；</li>
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>行业内容追踪：持续调研 AIGC 短视频、图文内容行业动态，输出前沿内容玩法参考，赋能 platform 内容 innovation 运营。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50/50 rounded-2xl border border-neutral-100 overflow-hidden transition-all duration-300">
+                    <button onclick="toggleMobileExp(4)" class="w-full text-left px-5 py-4 flex justify-between items-center focus:outline-none">
+                        <div class="min-w-0 pr-4">
+                            <span class="text-[9px] text-gu-gray/60 block mb-1">2023.03 - 2023.06</span>
+                            <span class="text-sm font-medium text-gu-black block truncate">北京忆空间文化发展</span>
+                        </div>
+                        <svg id="m-arrow-4" class="w-4 h-4 text-gu-gray transition-transform duration-300 transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div id="m-content-4" class="px-5 pb-5 space-y-4 transition-all duration-300 hidden">
+                        <p class="text-xs text-gu-red font-medium">产品运营设计 <span class="text-[11px] text-gu-gray font-light">· 北京忆空间文化发展有限公司 · 耳朵里的博物馆</span></p>
+                        <ul class="space-y-2 text-xs text-gu-gray leading-relaxed font-light">
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>内容运营：独立产出博物馆线上线下宣传全品类视觉物料，包含公众号图文配图、海报封面、线下研学手册等，支撑账号日常内容更新与线下 activity 物料；</li>
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>内容数据复盘：协同 product、运营团队拆解公众号等线上内容阅读、互动数据，定位内容，输出内容 optimization 方案，推动产品线上曝光提升，带动线下 activity 参与率提升。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Project Section 04 -->
+    <section id="project" class="min-h-screen w-full flex flex-col items-center justify-center px-6 py-28 border-t border-gu-light-gray/40">
+        <div class="max-w-6xl w-full flex flex-col justify-between h-full relative">
+            
+            <!-- 顶部标题与提示性导视 (Project: 04) -->
+            <div class="flex flex-col md:flex-row justify-between items-start w-full mb-20 relative z-10">
+                <div class="flex items-start gap-2">
+                    <span class="text-xs font-light text-gu-gray mt-1 md:mt-2 tracking-widest">04</span>
+                    <h2 class="text-4xl md:text-5xl font-normal text-gu-black tracking-tight font-sans">project</h2>
+                </div>
+                <div class="mt-4 md:mt-0 text-left md:text-right relative max-w-xs md:self-end pr-8">
+                    <p class="text-xs md:text-sm text-gu-gray font-light leading-relaxed">
+                        Hover folder card to pull out creative project details<br>
+                        <span class="text-[11px] text-gu-gray/60">鼠标悬停或点击卡片，查看详细内容</span>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 文件夹排版网格区：严格根据“截屏2026-06-21 13.11.28.png”的拟物设计图进行还原开发 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-28 w-full justify-items-center py-10">
+                
+                <!-- 文件夹 01: 设计作品集 (薄荷绿配方) -->
+                <!-- 点击直接顺滑打开仿真 macOS Safari 弹窗 -->
+                <div id="folder-design-portfolio" class="relative w-full max-w-[340px] h-[220px] sm:h-[255px] group/folder cursor-pointer overflow-visible">
+                    
+                    <!-- 1. 文件夹后背板 (Mint Color Plate) -->
+                    <div class="absolute inset-x-0 bottom-0 h-[170px] sm:h-[190px] bg-[#bef5e0] rounded-2xl z-0 transition-transform duration-500 shadow-md"></div>
+                    
+                    <!-- 2. 耳朵耳签 (Left Ear Tab) -->
+                    <div class="absolute bottom-[170px] sm:bottom-[190px] left-0 w-28 h-7 bg-[#bef5e0] rounded-t-2xl z-0"></div>
+                    
+                    <!-- 3. 内置抽拉 white 卡片 (Inner Sliding Card) -->
+                    <div class="absolute inset-x-4 bottom-2 h-[175px] sm:h-[195px] bg-white rounded-xl shadow-lg transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform translate-y-0 group-hover/folder:-translate-y-24 sm:group-hover/folder:-translate-y-28 z-10 p-5 flex flex-col justify-between overflow-hidden border border-neutral-100">
+                        <div class="space-y-1.5 text-left">
+                            <p class="text-[10px] font-medium text-gu-red tracking-wider uppercase">01 / design portfolio</p>
+                            <p class="text-xs sm:text-[13px] font-normal text-gu-black leading-snug mt-1">
+                                嗨，这里是我的设计作品集，内容包括视觉设计、交互设计、动态设计和其他AIGC项目。
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-neutral-100 pt-2 opacity-0 group-hover/folder:opacity-100 transition-opacity duration-300 text-[10px] text-gu-gray">
+                            <span>ui/ux & motion</span>
+                            <span class="text-gu-red font-normal font-sans">点击进入阅读 ↗</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 4. 磨砂玻璃前盖 (Translucent Front Flap) -->
+                    <div class="absolute inset-x-0 bottom-0 h-[170px] sm:h-[190px] bg-white/20 border-t border-white/40 backdrop-blur-md rounded-b-2xl rounded-tr-2xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.4)] z-20 pointer-events-none transition-all duration-500 shadow-sm"></div>
+                    
+                    <!-- 下方项目极简标题 -->
+                    <div class="absolute top-[235px] sm:top-[265px] left-0 w-full text-center">
+                        <span class="text-sm md:text-base font-normal text-gu-black tracking-wide">设计作品集</span>
+                    </div>
+                </div>
+
+                <!-- 文件夹 02: 小红书帐号自主运营 (天空蓝配方) -->
+                <!-- 点击直接顺滑向下滚动到 05 页的常态平铺小红书运营页 -->
+                <div onclick="document.getElementById('project-red-detail').scrollIntoView({behavior: 'smooth'})" class="relative w-full max-w-[340px] h-[220px] sm:h-[255px] group/folder cursor-pointer overflow-visible">
+                    
+                    <!-- 1. 文件夹后背板 (Sky Blue Plate) -->
+                    <div class="absolute inset-x-0 bottom-0 h-[170px] sm:h-[190px] bg-[#bbf0fd] rounded-2xl z-0 transition-transform duration-500 shadow-md"></div>
+                    
+                    <!-- 2. 耳朵耳签 (Left Ear Tab) -->
+                    <div class="absolute bottom-[170px] sm:bottom-[190px] left-0 w-28 h-7 bg-[#bbf0fd] rounded-t-2xl z-0"></div>
+                    
+                    <!-- 3. 内置抽拉 white 卡片 (Inner Sliding Card) -->
+                    <div class="absolute inset-x-4 bottom-2 h-[175px] sm:h-[195px] bg-white rounded-xl shadow-lg transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform translate-y-0 group-hover/folder:-translate-y-24 sm:group-hover/folder:-translate-y-28 z-10 p-5 flex flex-col justify-between overflow-hidden border border-neutral-100">
+                        <div class="space-y-1.5 text-left">
+                            <p class="text-[10px] font-medium text-gu-red tracking-wider uppercase">02 / red campaign</p>
+                            <p class="text-xs sm:text-[13px] font-normal text-gu-black leading-snug mt-1">
+                                项目职责：独立负责 2 个垂直赛道小红书账号，全流程负责选题策划、内容脚本、视觉拍摄剪辑、发布运营、数据复盘优化。
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-neutral-100 pt-2 opacity-0 group-hover/folder:opacity-100 transition-opacity duration-300 text-[10px] text-gu-gray">
+                            <span>2 vertical accounts</span>
+                            <span class="text-gu-red font-normal font-sans">向下滚动查看详细 ↘</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 4. 磨砂玻璃前盖 (Translucent Front Flap) -->
+                    <div class="absolute inset-x-0 bottom-0 h-[170px] sm:h-[190px] bg-white/20 border-t border-white/40 backdrop-blur-md rounded-b-2xl rounded-tr-2xl shadow-[inset_0_2px_4px_rgba(255,255,255,0.4)] z-20 pointer-events-none transition-all duration-500 shadow-sm"></div>
+                    
+                    <!-- 下方项目极简标题 -->
+                    <div class="absolute top-[235px] sm:top-[265px] left-0 w-full text-center">
+                        <span class="text-sm md:text-base font-normal text-gu-black tracking-wide">小红书双帐号自主运营</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- macOS Safari Browser Style Modal (作品集 PDF 预览弹窗模块) -->
+    <!-- 彻底修复：将弹窗整体层级（z-index）升至 99999 最大，并将关闭按钮设为 100000 且激活 pointer-events: auto 从而防止鼠标事件穿透 -->
+    <div id="mac-modal" class="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-[99999] p-4 md:p-6 opacity-0 pointer-events-none transition-all duration-300" onclick="if(event.target === this) closeMacModal()">
+        <div id="mac-window" class="bg-white w-full max-w-5xl h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-neutral-300 transform scale-95 transition-all duration-500 relative z-[100000]" onclick="event.stopPropagation()">
+            
+            <!-- Browser Header Toolbar -->
+            <div class="bg-[#ebebeb] border-b border-neutral-300 py-3 px-4 flex items-center justify-between select-none shrink-0 relative z-[100010]">
+                <!-- Traffic Light Controls -->
+                <div class="flex items-center space-x-2 w-[15%] relative z-[100020]">
+                    <!-- 关闭按钮，显式绑定 pointer-events-auto 和 cursor-pointer，使其 100% 能够响应点击与正常呈现指针样式 -->
+                    <button id="btn-close-mac" class="w-3.5 h-3.5 rounded-full bg-[#ff5f56] flex items-center justify-center group/btn relative focus:outline-none pointer-events-auto cursor-pointer" title="关闭窗口并返回" style="cursor: none !important;">
+                        <span class="opacity-0 group-hover/btn:opacity-100 text-[8px] font-bold text-[#4c0002] absolute pointer-events-none">×</span>
+                    </button>
+                    <button onclick="closeMacModal(); event.stopPropagation();" class="w-3.5 h-3.5 rounded-full bg-[#ffbd2e] flex items-center justify-center group/btn relative focus:outline-none pointer-events-auto cursor-pointer" title="最小化" style="cursor: none !important;">
+                        <span class="opacity-0 group-hover/btn:opacity-100 text-[8px] font-bold text-[#5c3e00] absolute pointer-events-none">–</span>
+                    </button>
+                    <button onclick="toggleFullscreen(); event.stopPropagation();" class="w-3.5 h-3.5 rounded-full bg-[#27c93f] flex items-center justify-center group/btn relative focus:outline-none pointer-events-auto cursor-pointer" title="全屏切换" style="cursor: none !important;">
+                        <span class="opacity-0 group-hover/btn:opacity-100 text-[7px] font-bold text-[#006505] absolute pointer-events-none">＋</span>
+                    </button>
+                </div>
+                
+                <!-- URL Address Bar -->
+                <div class="flex items-center space-x-2 bg-white border border-neutral-200 rounded-lg py-1 px-4 text-xs text-neutral-600 w-full max-w-md shadow-sm justify-between">
+                    <div class="flex items-center space-x-1.5 truncate">
+                        <svg class="w-3.5 h-3.5 text-neutral-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <span class="font-light truncate select-all">dahliayizhu.cargo.site/gurunhong_portfolio.pdf</span>
+                    </div>
+                    <svg class="w-3.5 h-3.5 text-neutral-400 shrink-0 cursor-pointer hover:text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 15H19"/>
+                    </svg>
+                </div>
+                
+                <!-- Right Action Bar -->
+                <div class="flex items-center justify-end space-x-3 w-[15%] text-neutral-500">
+                    <a href="https://qfile.qq.com/doc-preview?fileSetId=ad9ae48f-bf06-4fc3-af7a-a4ca54f1d77a&fileId=8a482320-3389-e188-56b8-442b7e5b7fc8&fileType=pdf&physicalId=EhSkEzLWGVSfUGkCk4KQ9l-RxaQX5Rin69gVILV0KIHX_YCVmJUDMgRwcm9kUIDqSVoQcx-vIzg3aTtk9CSfAzNTzXoDOo__ggECZ3o&fileName=%E9%A1%BE%E6%B6%A6%E7%BA%A2-%E4%BD%9C%E5%93%81%E9%9B%861.pdf&title=%E9%A1%BE%E6%B6%A6%E7%BA%A2-%E4%BD%9C%E5%93%81%E9%9B%861.pdf%EF%BD%9CQQ%E9%97%AA%E4%BC%A0&fileSize=45495719&cliFileIndex=1&code=Aog3zhXdJg" 
+                       target="_blank" 
+                       class="text-xs text-gu-red border border-gu-red/30 px-2.5 py-1 rounded hover:bg-gu-red hover:text-white transition-colors duration-300 font-normal whitespace-nowrap hidden sm:inline-block shrink-0" 
+                       title="在浏览器独立标签页打开原始PDF">
+                        原网页打开 ↗
+                    </a>
+                </div>
+            </div>
+            
+            <!-- PDF Viewer Content Frame (将 iframe 的 z-index 调低并进行遮罩屏蔽，避免其原生沙盒劫持点击事件 and 自定义鼠标渲染) -->
+            <div class="flex-1 bg-neutral-100 relative overflow-hidden z-[100005]">
+                <div class="absolute inset-0 overflow-hidden">
+                    <iframe 
+                        id="pdf-frame"
+                        src="https://qfile.qq.com/doc-preview?fileSetId=ad9ae48f-bf06-4fc3-af7a-a4ca54f1d77a&fileId=8a482320-3389-e188-56b8-442b7e5b7fc8&fileType=pdf&physicalId=EhSkEzLWGVSfUGkCk4KQ9l-RxaQX5Rin69gVILV0KIHX_YCVmJUDMgRwcm9kUIDqSVoQcx-vIzg3aTtk9CSfAzNTzXoDOo__ggECZ3o&fileName=%E9%A1%BE%E6%B6%A6%E7%BA%A2-%E4%BD%9C%E5%93%81%E9%9B%861.pdf&title=%E9%A1%BE%E6%B6%A6%E7%BA%A2-%E4%BD%9C%E5%93%81%E9%9B%861.pdf%EF%BD%9CQQ%E9%97%AA%E4%BC%A0&fileSize=45495719&cliFileIndex=1&code=Aog3zhXdJg" 
+                        class="absolute w-full h-[calc(100%+60px)] -top-[60px] border-none z-1"
+                        loading="lazy">
+                    </iframe>
+                </div>
+                
+                <!-- 底部备用控制引导层 -->
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-md px-5 py-2.5 rounded-full text-white text-[11px] font-normal tracking-wide shadow-lg flex items-center space-x-2 shrink-0 max-w-sm pointer-events-none z-30">
+                    <span>支持在线滚动阅读。如若部分 network 受限，可点击右上角「原网页打开」直达。</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 05页 Project (设计读研知识垂类小红书账号常态化平铺页面) -->
+    <!-- 完美对应“下一页05页，这一页标题是project”的要求 -->
+    <section id="project-red-detail" class="min-h-screen w-full flex flex-col items-center justify-center px-6 py-28 border-t border-gu-light-gray/40 bg-white">
+        <div class="max-w-6xl w-full flex flex-col justify-between h-full relative">
+            
+            <!-- 顶部标题与提示性导视 (Project: 05) -->
+            <div class="flex flex-col md:flex-row justify-between items-start w-full mb-16 relative z-10">
+                <div class="flex items-start gap-2">
+                    <span class="text-xs font-light text-gu-gray mt-1 md:mt-2 tracking-widest">05</span>
+                    <h2 class="text-4xl md:text-5xl font-normal text-gu-black tracking-tight font-sans">project</h2>
+                </div>
+                <div class="mt-4 md:mt-0 text-left md:text-right relative max-w-xs md:self-end">
+                    <p class="text-xs md:text-sm text-gu-gray font-light leading-relaxed">
+                        Design Postgraduate Knowledge Vertical & Academic Operations<br>
+                        <span class="text-[11px] text-gu-gray/60">小红书垂直赛道运营：学术拆解与专业干货图文生产</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 内舱双栏平铺布局 -->
+            <div class="flex flex-col md:flex-row gap-12 items-stretch justify-between w-full">
+                
+                <!-- 左栏：高质感大字画册排版 (46% 宽度) -->
+                <div class="w-full md:w-[46%] flex flex-col justify-between space-y-8">
+                    <div class="space-y-6">
+                        <!-- 极简设计读研书本主视觉 -->
+                        <div class="w-full aspect-[16/10] rounded-2xl overflow-hidden shadow-sm bg-neutral-50 border border-neutral-100 relative shrink-0">
+                            <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=800" 
+                                 alt="设计读研知识垂类" 
+                                 class="w-full h-full object-cover grayscale-[30%] hover:grayscale-0 transition-all duration-[800ms]">
+                        </div>
+                        
+                        <!-- 文案内容 -->
+                        <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed font-light text-justify font-sans">
+                            设计读研知识垂类账号：聚焦艺术硕⼠论⽂⼲货赛道，输出论⽂拆解、专业学习⼲货图⽂，精准匹配学⽣群体需求，积累粉丝 <span class="text-gu-red font-sans font-medium">1k+</span>，总赞藏 <span class="text-gu-red font-sans font-medium">15.6k</span>；
+                        </p>
+
+                        <!-- 小红书实操核心方法论卡片 (Insight & Growth 匹配学术知识定位) -->
+                        <div class="space-y-3.5 border-t border-neutral-100 pt-5 text-xs text-neutral-400 font-light leading-relaxed">
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-gu-red text-sm mt-0.5">💡</span>
+                                <span><strong class="text-neutral-700 font-normal">insight:</strong> 深挖艺术/设计学生、考研 student 痛点，通过垂直领域干货输出与可视化图文大纲，精准吸引学生用户群体。</span>
+                            </div>
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-gu-red text-sm mt-0.5">📈</span>
+                                <span><strong class="text-neutral-700 font-normal">growth:</strong> 同时根据学术热点与数据反馈，进行选题优化，提升互动与笔记曝光度。</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 话题气泡 (全小写处理) -->
+                    <div class="pt-4 flex flex-wrap gap-2 text-[11px] text-neutral-500 font-light font-mono shrink-0">
+                        <span class="text-gu-red">#studymethod</span>
+                        <span class="text-gu-red">#ailearning</span>
+                        <span class="text-gu-red">#paperinterpretation</span>
+                    </div>
+                </div>
+
+                <!-- 右栏：仿真可交互智能手机样机 (52% 宽度) -->
+                <!-- 05页第一个卡片改造成了 <a> 链接，点击能够顺利直达指定的个人主页，第一个卡片的图片已修正为正确的学术封面大图，点赞数据、爱心颜色等保留完整 -->
+                <div class="w-full md:w-[50%] bg-neutral-50/50 rounded-3xl border border-neutral-100/60 p-6 sm:p-8 flex items-center justify-center select-none relative">
+                    
+                    <!-- 智能手机外壳样机 -->
+                    <div class="relative w-[285px] h-[525px] bg-[#1a1a1c] rounded-[42px] p-[10px] shadow-2xl border-[3px] border-[#333] shrink-0 flex flex-col overflow-hidden">
+                        
+                        <!-- 顶部的物理灵动岛 -->
+                        <div class="absolute top-[11px] left-1/2 -translate-x-1/2 w-24 h-5 bg-[#000] rounded-full z-50 flex items-center justify-end px-3">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#111115] border border-neutral-800"></span>
+                        </div>
+
+                        <!-- 手机屏幕内舱 -->
+                        <div class="w-full h-full bg-[#f9f9f9] rounded-[33px] overflow-hidden flex flex-col relative border border-neutral-900">
+                            
+                            <!-- 手机状态栏 -->
+                            <div class="h-9 pt-3 px-6 flex justify-between items-center bg-white text-[10px] font-medium text-neutral-700 font-sans z-40 shrink-0">
+                                <span>12:20</span>
+                                <div class="flex items-center space-x-1">
+                                    <svg class="w-3 h-3 text-neutral-800" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3c-1.2 0-2.4.2-3.6.7L12 9l3.6-5.3c-1.2-.5-2.4-.7-3.6-.7zm0 18c6.1 0 11-4.9 11-11h-2c0 5-4 9-9 9s-9-4-9-9H1c0 6.1 4.9 11 11 11z"/></svg>
+                                    <div class="w-4 h-2 border border-neutral-800 rounded-sm p-[1px] flex items-center">
+                                        <div class="w-2.5 h-full bg-neutral-800 rounded-[1px]"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 小红书 App 顶导栏 -->
+                            <div class="h-10 bg-white border-b border-neutral-100 flex items-center justify-between px-4 z-40 shrink-0">
+                                <svg class="w-4 h-4 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                                <div class="flex items-center space-x-4 text-xs">
+                                    <span class="text-neutral-400 font-light">关注</span>
+                                    <div class="relative py-1">
+                                        <span class="text-neutral-900 font-medium font-sans">发现</span>
+                                        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-0.5 bg-gu-red rounded-full"></span>
+                                    </div>
+                                    <span class="text-neutral-400 font-light">本地</span>
+                                </div>
+                                <svg class="w-4 h-4 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            </div>
+
+                            <!-- 小红书双列滑动瀑布流 (可自由下滑交互，展现 8 张学术干货封面) -->
+                            <!-- 第一个图文卡片改造成了 <a> 链接，点击能够顺利直达指定的个人主页，第一个卡片的图片已修正为学术封面大图，点赞数据、爱心颜色等保留完整 -->
+                            <div class="flex-1 overflow-y-auto p-2 bg-[#f6f6f6] custom-scrollbar space-y-2 pb-16">
+                                <div class="grid grid-cols-2 gap-2">
+                                    
+                                    <!-- 卡片 1 (带有跳转至个人中心链接的第一个卡片，且爱心点赞防止冒泡跳转) -->
+                                    <a href="https://www.xiaohongshu.com/user/profile/62a69cb8000000001b02b481?xsec_token=AB_bGgPObkTQUtTux7pPxYvj08rLKl0BY6jP6_MyhtrRE=&xsec_source=pc_note" target="_blank" class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col hover:opacity-95 transition-opacity duration-300 pointer-events-auto">
+                                        <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden relative">
+                                            <img src="https://exact-plum-wzvhnlfv.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-21%2020.08.07.png" alt="设计史" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="p-2 space-y-1.5 flex-1 flex flex-col justify-between">
+                                            <p class="text-[9px] font-normal text-neutral-800 leading-snug line-clamp-3 font-sans">论文带读｜沉浸式交互体验设计在艺术疗愈中的发展</p>
+                                            <div class="flex items-center justify-end text-[8px] text-neutral-400 w-full pt-1">
+                                                <button onclick="likeCard('like-count-1', 'like-icon-1'); event.preventDefault(); event.stopPropagation();" class="flex items-center space-x-0.5 focus:outline-none shrink-0 relative z-10">
+                                                    <svg id="like-icon-1" class="w-2.5 h-2.5 text-gu-red hover-bounce-heart transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg>
+                                                    <span id="like-count-1" class="font-sans text-gu-red">1.3k</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </a>
+
+                                    <!-- 卡片 2 (已精准修改图片为正确的学术大纲封面 2，不与06页重复，标题字修正为带读) -->
+                                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col">
+                                        <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden relative">
+                                            <img src="https://chronic-crimson-bpspqxnv.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-21%2020.26.50.png" alt="避坑" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="p-2 space-y-1.5 flex-1 flex flex-col justify-between">
+                                            <p class="text-[9px] font-normal text-neutral-800 leading-snug line-clamp-3 font-sans">论文带读｜交互设计方法在艺术疗愈中的应用</p>
+                                            <div class="flex items-center justify-end text-[8px] text-neutral-400 w-full pt-1">
+                                                <button onclick="likeCard('like-count-2', 'like-icon-2'); event.stopPropagation();" class="flex items-center space-x-0.5 focus:outline-none shrink-0">
+                                                    <svg id="like-icon-2" class="w-2.5 h-2.5 text-gu-red hover-bounce-heart transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg>
+                                                    <span id="like-count-2" class="font-sans text-gu-red">1.2k</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 卡片 3 (修复错误的图文图片，已成功修改为正确的学术大纲封面图 3) -->
+                                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col">
+                                        <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden relative">
+                                            <img src="https://mad-teal-fmeg3tdh.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-21%2020.51.27.png" alt="PPT" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="p-2 space-y-1.5 flex-1 flex flex-col justify-between">
+                                            <p class="text-[9px] font-normal text-neutral-800 leading-snug line-clamp-3 font-sans">论文带读｜AIGC 赋能下的交互叙事 research</p>
+                                            <div class="flex items-center justify-end text-[8px] text-neutral-400 w-full pt-1">
+                                                <button onclick="likeCard('like-count-3', 'like-icon-3'); event.stopPropagation();" class="flex items-center space-x-0.5 focus:outline-none shrink-0">
+                                                    <svg id="like-icon-3" class="w-2.5 h-2.5 text-gu-red hover-bounce-heart transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg>
+                                                    <span id="like-count-3" class="font-sans text-gu-red">581</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 卡片 4 -->
+                                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col">
+                                        <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden relative">
+                                            <img src="https://yodelling-indigo-qfqdjkvm.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-21%2020.51.56.png" alt="考点" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="p-2 space-y-1.5 flex-1 flex flex-col justify-between">
+                                            <p class="text-[9px] font-normal text-neutral-800 leading-snug line-clamp-3 font-sans">论文带读｜沉浸式新媒体装置艺术“空间”再造</p>
+                                            <div class="flex items-center justify-end text-[8px] text-neutral-400 w-full pt-1">
+                                                <button onclick="likeCard('like-count-4', 'like-icon-4'); event.stopPropagation();" class="flex items-center space-x-0.5 focus:outline-none shrink-0">
+                                                    <svg id="like-icon-4" class="w-2.5 h-2.5 text-gu-red hover-bounce-heart transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg>
+                                                    <span id="like-count-4" class="font-sans text-gu-red">398</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 卡片 5 -->
+                                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col">
+                                        <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden relative">
+                                            <img src="https://breezy-salmon-mycdchds.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-21%2020.52.09.png" alt="开题" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="p-2 space-y-1.5 flex-1 flex flex-col justify-between">
+                                            <p class="text-[9px] font-normal text-neutral-800 leading-snug line-clamp-3 font-sans">论文带读｜新媒体交互影像的情感化表达研究</p>
+                                            <div class="flex items-center justify-end text-[8px] text-neutral-400 w-full pt-1">
+                                                <button onclick="likeCard('like-count-5', 'like-icon-5'); event.stopPropagation();" class="flex items-center space-x-0.5 focus:outline-none shrink-0">
+                                                    <svg id="like-icon-5" class="w-2.5 h-2.5 text-gu-red hover-bounce-heart transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg>
+                                                    <span id="like-count-5" class="font-sans text-gu-red">500</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 卡片 6 -->
+                                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col">
+                                        <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden relative">
+                                            <img src="https://adorable-azure-e6lgryzd.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-21%2020.52.21.png" alt="网站" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="p-2 space-y-1.5 flex-1 flex flex-col justify-between">
+                                            <p class="text-[9px] font-normal text-neutral-800 leading-snug line-clamp-3 font-sans">论文带读｜数字时代沉浸式艺术的美学考察</p>
+                                            <div class="flex items-center justify-end text-[8px] text-neutral-400 w-full pt-1">
+                                                <button onclick="likeCard('like-count-6', 'like-icon-6'); event.stopPropagation();" class="flex items-center space-x-0.5 focus:outline-none shrink-0">
+                                                    <svg id="like-icon-6" class="w-2.5 h-2.5 text-gu-red hover-bounce-heart transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg>
+                                                    <span id="like-count-6" class="font-sans text-gu-red">564</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 卡片 7 -->
+                                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col">
+                                        <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden relative">
+                                            <img src="https://hilarious-lime-6brjfrgz.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-21%2020.52.35.png" alt="文献" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="p-2 space-y-1.5 flex-1 flex flex-col justify-between">
+                                            <p class="text-[9px] font-normal text-neutral-800 leading-snug line-clamp-3 font-sans">论文带读｜基于通感转化理论的交互装置体验</p>
+                                            <div class="flex items-center justify-end text-[8px] text-neutral-400 w-full pt-1">
+                                                <button onclick="likeCard('like-count-7', 'like-icon-7'); event.stopPropagation();" class="flex items-center space-x-0.5 focus:outline-none shrink-0">
+                                                    <svg id="like-icon-7" class="w-2.5 h-2.5 text-gu-red hover-bounce-heart transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg>
+                                                    <span id="like-count-7" class="font-sans text-gu-red">504</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 卡片 8 -->
+                                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col">
+                                        <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden relative">
+                                            <img src="https://deaf-azure-o9jpi114.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-21%2020.52.49.png" alt="答辩" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="p-2 space-y-1.5 flex-1 flex flex-col justify-between">
+                                            <p class="text-[9px] font-normal text-neutral-800 leading-snug line-clamp-3 font-sans">论文带读｜具身认知视角下的沉浸式心流体验</p>
+                                            <div class="flex items-center justify-end text-[8px] text-neutral-400 w-full pt-1">
+                                                <button onclick="likeCard('like-count-8', 'like-icon-8'); event.stopPropagation();" class="flex items-center space-x-0.5 focus:outline-none shrink-0">
+                                                    <svg id="like-icon-8" class="w-2.5 h-2.5 text-gu-red hover-bounce-heart transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg>
+                                                    <span id="like-count-8" class="font-sans text-gu-red">420</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- 底部主导航条 -->
+                            <div class="absolute bottom-0 inset-x-0 h-11 bg-white border-t border-neutral-100 flex items-center justify-around text-neutral-400 text-[10px] pb-1.5 z-40 select-none">
+                                <span class="text-gu-red font-medium">首页</span>
+                                <span>视频</span>
+                                <div class="w-7 h-5 bg-gu-red rounded-md flex items-center justify-center text-white text-xs font-bold font-sans">+</div>
+                                <span>消息</span>
+                                <span>我</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 06页 Project (个人成长向 Vlog 页面) -->
+    <!-- 精准将 6张图图文封面与标题完美结合，且完全去除了底部的灰色作者/名称小字，保持整洁 -->
+    <!-- 爱心初始变红并引入 hover-bounce-heart 弹簧动画类 -->
+    <!-- 第一个图文卡片设置成点击可以跳转到小红书用户分享链接，同时利用 stopPropagation 机制阻止红心点赞冒泡触发跳转 -->
+    <section id="project-red-detail-2" class="min-h-screen w-full flex flex-col items-center justify-center px-6 py-28 border-t border-gu-light-gray/40 bg-white">
+        <div class="max-w-6xl w-full flex flex-col justify-between h-full relative">
+            
+            <!-- 顶部标题与提示性导视 (project: 06) -->
+            <div class="flex flex-col md:flex-row justify-between items-start w-full mb-16 relative z-10">
+                <div class="flex items-start gap-2">
+                    <span class="text-xs font-light text-gu-gray mt-1 md:mt-2 tracking-widest">06</span>
+                    <h2 class="text-4xl md:text-5xl font-normal text-gu-black tracking-tight font-sans">project</h2>
+                </div>
+                <div class="mt-4 md:mt-0 text-left md:text-right relative max-w-xs md:self-end">
+                    <p class="text-xs md:text-sm text-gu-gray font-light leading-relaxed">
+                        Cross-platform media growth & content design<br>
+                        <span class="text-[11px] text-gu-gray/60">小红书垂直赛道双账号自主运营及数据复盘</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-12 items-stretch justify-between w-full">
+                
+                <!-- 左栏：高质感大字画册排版 (46% 宽度) -->
+                <div class="w-full md:w-[46%] flex flex-col justify-between space-y-8">
+                    <div class="space-y-6">
+                        <!-- 海滩彩色方块大图 -->
+                        <div class="w-full aspect-[16/10] rounded-2xl overflow-hidden shadow-sm bg-neutral-50 border border-neutral-100 relative shrink-0">
+                            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=800" 
+                                 alt="海滩彩色方块" 
+                                 class="w-full h-full object-cover grayscale-[30%] hover:grayscale-0 transition-all duration-[800ms]">
+                        </div>
+                        
+                        <!-- 您指定的文本内容 -->
+                        <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed font-light text-justify font-sans">
+                            打造个⼈成⻓向 <strong class="text-gu-black font-normal">内容</strong>，持续输出图文、视频内容，累计粉丝 <span class="text-gu-red font-sans font-medium">400+</span>，账号总赞藏破 <span class="text-gu-red font-sans font-medium">1w</span>，通过尝试不同热门选题，优化封面、标题与发布节奏稳定提升笔记曝光。
+                        </p>
+
+                        <!-- 小红书实操核心方法论卡片 (Insight & Growth 已经完美回滚) -->
+                        <div class="space-y-3.5 border-t border-neutral-100 pt-5 text-xs text-neutral-400 font-light leading-relaxed">
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-gu-red text-sm mt-0.5">💡</span>
+                                <span><strong class="text-neutral-700 font-normal">insight:</strong> 独立运营个人成长类小红书账号，围绕独居生活、运动健身、求职成长等方向，通过分析用户关注点与情绪需求，持续策划成长、生活方式类内容选题</span>
+                            </div>
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-gu-red text-sm mt-0.5">📈</span>
+                                <span><strong class="text-neutral-700 font-normal">growth:</strong> 两个月内完成30+篇内容策划与发布，保持周更4篇左右，单篇内容最高曝光4w+，累计获得1w赞藏。</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 话题气泡 -->
+                    <div class="pt-4 flex flex-wrap gap-2 text-[11px] text-neutral-500 font-light font-mono shrink-0">
+                        <span class="text-gu-red">#lifestyle</span>
+                        <span class="text-gu-red">#fitness</span>
+                        <span class="text-gu-red">#girlsgrowth</span>
+                    </div>
+                </div>
+
+                <!-- 右栏：仿真可交互智能手机样机 (52% 宽度) -->
+                <!-- 06页右侧手机里的第一个图文卡片改造成了 <a> 链接，点击能够顺利直达指定的个人主页，爱心点赞使用了 event.stopPropagation() 防止冒泡拦截跳转 -->
+                <div class="w-full md:w-[50%] bg-neutral-50/50 rounded-3xl border border-neutral-100/60 p-6 sm:p-8 flex items-center justify-center select-none relative">
+                    
+                    <!-- 智能手机外壳样机 -->
+                    <div class="relative w-[285px] h-[525px] bg-[#1a1a1c] rounded-[42px] p-[10px] shadow-2xl border-[3px] border-[#333] shrink-0 flex flex-col overflow-hidden">
+                        
+                        <!-- 顶部的物理灵动岛 -->
+                        <div class="absolute top-[11px] left-1/2 -translate-x-1/2 w-24 h-5 bg-[#000] rounded-full z-50 flex items-center justify-end px-3">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#111115] border border-neutral-800"></span>
+                        </div>
+
+                        <!-- 手机屏幕内舱 -->
+                        <div class="w-full h-full bg-[#f9f9f9] rounded-[33px] overflow-hidden flex flex-col relative border border-neutral-900">
+                            
+                            <!-- 手机状态栏 -->
+                            <div class="h-9 pt-3 px-6 flex justify-between items-center bg-white text-[10px] font-medium text-neutral-700 font-sans z-40 shrink-0">
+                                <span>12:20</span>
+                                <div class="flex items-center space-x-1">
+                                    <svg class="w-3 h-3 text-neutral-800" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3c-1.2 0-2.4.2-3.6.7L12 9l3.6-5.3c-1.2-.5-2.4-.7-3.6-.7zm0 18c6.1 0 11-4.9 11-11h-2c0 5-4 9-9 9s-9-4-9-9H1c0 6.1 4.9 11 11 11z"/></svg>
+                                    <div class="w-4 h-2 border border-neutral-800 rounded-sm p-[1px] flex items-center">
+                                        <div class="w-2.5 h-full bg-neutral-800 rounded-[1px]"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 小红书 App 顶导栏 -->
+                            <div class="h-10 bg-white border-b border-neutral-100 flex items-center justify-between px-4 z-40 shrink-0">
+                                <svg class="w-4 h-4 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                                <div class="flex items-center space-x-4 text-xs">
+                                    <span class="text-neutral-400 font-light">关注</span>
+                                    <div class="relative py-1">
+                                        <span class="text-neutral-900 font-medium font-sans">发现</span>
+                                        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-0.5 bg-gu-red rounded-full"></span>
+                                    </div>
+                                    <span class="text-neutral-400 font-light">本地</span>
+                                </div>
+                                <svg class="w-4 h-4 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            </div>
+
+                            <!-- 小红书双列滑动瀑布流 (可自由下滑交互，具有 06 独立交互标签与全新6张指定封面图，去除了底部的灰色名字小字) -->
+                            <!-- 所有爱心初始颜色替换为 text-gu-red 并绑定 hover-bounce-heart 动效类，数据亦以 text-gu-red 渲染 -->
+                            <div class="flex-1 overflow-y-auto p-2 bg-[#f6f6f6] custom-scrollbar space-y-2 pb-16">
+                                <div class="grid grid-cols-2 gap-2">
+                                    
+                                    <!-- 卡片 1 (新指定的学术大纲封面图 1 - 完美绑定目标跳转超链接) -->
+                                    <a href="https://www.xiaohongshu.com/user/profile/5b979ac14b7e83000161afc0?xsec_token=YB6DbLRTmoOvqVIW-zq4YPUSYUkE3OL6Id8YN_Dnrhncg=&xsec_source=app_share&xhsshare=CopyLink&shareRedId=N0g7NzxGRzo6STxHQTswNjY0PzhFS0k5&apptime=1782042114&share_id=d3d7c82bc07c4ff8a1aa7eccfb8d255d&wechatWid=37e3f982e2c2bd55b9595ad7fd3af0ba&wechatOrigin=menu" target="_blank" class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col hover:opacity-95 transition-opacity duration-300 pointer-events-auto">
+                                        <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden relative">
+                                            <img src="https://clever-ivory-qfv8nctj.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-21%2019.59.38.png" alt="考研" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="p-2 space-y-1.5 flex-1 flex flex-col justify-between">
+                                            <p class="text-[9px] font-normal text-neutral-800 leading-snug line-clamp-3 font-sans">え？#毕业季 #我不是天才吗#记录校园生活</p>
+                                            <div class="flex items-center justify-end text-[8px] text-neutral-400 w-full pt-1">
+                                                <button onclick="likeCard('like-count-06-1', 'like-icon-06-1'); event.preventDefault(); event.stopPropagation();" class="flex items-center space-x-0.5 focus:outline-none shrink-0 relative z-10">
+                                                    <svg id="like-icon-06-1" class="w-2.5 h-2.5 text-gu-red hover-bounce-heart transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg>
+                                                    <span id="like-count-06-1" class="font-sans text-gu-red">463</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </a>
+
+                                    <!-- 卡片 2 (新指定的学术大纲封面图 2) -->
+                                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col">
+                                        <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden relative">
+                                            <img src="https://unnecessary-coral-hdkbwzah.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-21%2021.17.13.png" alt="情绪" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="p-2 space-y-1.5 flex-1 flex flex-col justify-between">
+                                            <p class="text-[9px] font-normal text-neutral-800 leading-snug line-clamp-3 font-sans">读研Jlog | JENTLE SALON ̩͙꒰ঌ🦄໒꒱·</p>
+                                            <div class="flex items-center justify-end text-[8px] text-neutral-400 w-full pt-1">
+                                                <button onclick="likeCard('like-count-06-2', 'like-icon-06-2')" class="flex items-center space-x-0.5 focus:outline-none shrink-0">
+                                                    <svg id="like-icon-06-2" class="w-2.5 h-2.5 text-gu-red hover-bounce-heart transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg>
+                                                    <span id="like-count-06-2" class="font-sans text-gu-red">116</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 卡片 3 (新指定的学术大纲封面图 3) -->
+                                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col">
+                                        <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden relative">
+                                            <img src="https://watery-beige-79dq4p05.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-21%2021.17.39.png" alt="散步" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="p-2 space-y-1.5 flex-1 flex flex-col justify-between">
+                                            <p class="text-[9px] font-normal text-neutral-800 leading-snug line-clamp-3 font-sans">读研Elog | 国贸直击灵魂的日式炸猪排！</p>
+                                            <div class="flex items-center justify-end text-[8px] text-neutral-400 w-full pt-1">
+                                                <button onclick="likeCard('like-count-06-3', 'like-icon-06-3')" class="flex items-center space-x-0.5 focus:outline-none shrink-0">
+                                                    <svg id="like-icon-06-3" class="w-2.5 h-2.5 text-gu-red hover-bounce-heart transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg>
+                                                    <span id="like-count-06-3" class="font-sans text-gu-red">406</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 卡片 4 (新指定的学术大纲封面图 4) -->
+                                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col">
+                                        <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden relative">
+                                            <img src="https://serious-rose-0fcnw5be.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-21%2021.18.05.png" alt="合作" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="p-2 space-y-1.5 flex-1 flex flex-col justify-between">
+                                            <p class="text-[9px] font-normal text-neutral-800 leading-snug line-clamp-3 font-sans">请增加心之容器</p>
+                                            <div class="flex items-center justify-end text-[8px] text-neutral-400 w-full pt-1">
+                                                <button onclick="likeCard('like-count-06-4', 'like-icon-06-4')" class="flex items-center space-x-0.5 focus:outline-none shrink-0">
+                                                    <svg id="like-icon-06-4" class="w-2.5 h-2.5 text-gu-red hover-bounce-heart transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg>
+                                                    <span id="like-count-06-4" class="font-sans text-gu-red">467</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 卡片 5 (新指定的学术大纲封面图 5) -->
+                                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col">
+                                        <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden relative">
+                                            <img src="https://naval-fuchsia-6gkr4ztn.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-21%2021.18.15.png" alt="日记" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="p-2 space-y-1.5 flex-1 flex flex-col justify-between">
+                                            <p class="text-[9px] font-normal text-neutral-800 leading-snug line-clamp-3 font-sans">大家define都搭什么穿啊！</p>
+                                            <div class="flex items-center justify-between text-[8px] text-neutral-400 w-full pt-1">
+                                                <button onclick="likeCard('like-count-06-5', 'like-icon-06-5')" class="flex items-center space-x-0.5 focus:outline-none shrink-0">
+                                                    <svg id="like-icon-06-5" class="w-2.5 h-2.5 text-gu-red hover-bounce-heart transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg>
+                                                    <span id="like-count-06-5" class="font-sans text-gu-red">379</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 卡片 6 (新指定的学术大纲封面图 6) -->
+                                    <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col">
+                                        <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden relative">
+                                            <img src="https://circular-aqua-6xcfytbi.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-21%2021.19.37.png" alt="落日" class="w-full h-full object-cover">
+                                        </div>
+                                        <div class="p-2 space-y-1.5 flex-1 flex flex-col justify-between">
+                                            <p class="text-[9px] font-normal text-neutral-800 leading-snug line-clamp-3 font-sans">读研vlog 港迪暴走一天怎么玩</p>
+                                            <div class="flex items-center justify-end text-[8px] text-neutral-400 w-full pt-1">
+                                                <button onclick="likeCard('like-count-06-6', 'like-icon-06-6')" class="flex items-center space-x-0.5 focus:outline-none shrink-0">
+                                                    <svg id="like-icon-06-6" class="w-2.5 h-2.5 text-gu-red hover-bounce-heart transition-colors duration-300" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg>
+                                                    <span id="like-count-06-6" class="font-sans text-gu-red">126</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- 底部主导航条 -->
+                            <div class="absolute bottom-0 inset-x-0 h-11 bg-white border-t border-neutral-100 flex items-center justify-around text-neutral-400 text-[10px] pb-1.5 z-40 select-none">
+                                <span class="text-gu-red font-medium">首页</span>
+                                <span>视频</span>
+                                <div class="w-7 h-5 bg-gu-red rounded-md flex items-center justify-center text-white text-xs font-bold font-sans">+</div>
+                                <span>消息</span>
+                                <span>我</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section (序号顺延变更为 07) -->
+    <section id="contact" class="min-h-screen w-full flex flex-col items-center justify-center px-6 py-28 border-t border-gu-light-gray/40">
+        <div class="max-w-6xl w-full">
+            
+            <!-- 顶部标题与提示性导视 (Contact me: 07) -->
+            <div class="flex flex-col md:flex-row justify-between items-start w-full mb-20 relative z-10">
+                <div class="flex items-start gap-2">
+                    <span class="text-xs font-light text-gu-gray mt-1 md:mt-2 tracking-widest">07</span>
+                    <h2 class="text-4xl md:text-5xl font-normal text-gu-black tracking-tight font-sans">contact me</h2>
+                </div>
+                <div class="mt-4 md:mt-0 text-left md:text-right relative max-w-xs md:self-end">
+                    <p class="text-xs md:text-sm text-gu-gray font-light leading-relaxed">
+                        Let's connect and create something together<br>
+                        <span class="text-[11px] text-gu-gray/60">期待与您建立联络，共创有温度的内容与产品</span>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 升级后的一键点击复制交互区 -->
+            <div class="flex flex-col items-center justify-center py-10 space-y-8 relative">
+                <!-- 核心联络邮箱 -->
+                <div onclick="copyText('g1471209781@163.com')" class="text-center group/item cursor-pointer">
+                    <h3 class="text-3xl md:text-5xl font-thin tracking-wider hover:text-gu-red transition-colors duration-300 text-gu-black relative">
+                        g1471209781@163.com
+                    </h3>
+                    <span class="text-[10px] text-gu-gray/60 opacity-0 group-hover/item:opacity-100 transition-opacity duration-300 block mt-1.5 tracking-widest uppercase">点击复制邮箱 ↗</span>
+                </div>
+
+                <!-- 电话与微信号 -->
+                <div class="flex flex-col items-center space-y-6">
+                    <div onclick="copyText('19969308528')" class="text-center group/item cursor-pointer">
+                        <p class="text-lg md:text-2xl font-thin tracking-widest text-gu-gray">
+                            TEL : <span class="text-gu-black hover:text-gu-red transition-colors duration-150 font-normal">199 6930 8528</span>
+                        </p>
+                        <span class="text-[10px] text-gu-gray/60 opacity-0 group-hover/item:opacity-100 transition-opacity duration-300 block mt-0.5 tracking-widest uppercase">点击复制电话 ↗</span>
+                    </div>
+                    <div onclick="copyText('Don_Quixoteee')" class="text-center group/item cursor-pointer">
+                        <p class="text-lg md:text-2xl font-thin tracking-widest text-gu-gray">
+                            WECHAT : <span class="text-gu-black hover:text-gu-red transition-colors duration-150 font-normal">Don_Quixoteee</span>
+                        </p>
+                        <span class="text-[10px] text-gu-gray/60 opacity-0 group-hover/item:opacity-100 transition-opacity duration-300 block mt-0.5 tracking-widest uppercase">点击复制微信 ↗</span>
+                    </div>
+                </div>
+
+                <!-- 复制成功反馈 Toast 容器 (高度占位稳定无抖动) -->
+                <div class="h-10 flex items-center justify-center">
+                    <div id="copy-toast" class="opacity-0 pointer-events-none transition-all duration-300 transform translate-y-2 bg-emerald-50/95 border border-emerald-100 text-emerald-800 text-xs px-5 py-2.5 rounded-full inline-flex items-center space-x-1.5 font-normal tracking-wide shadow-sm">
+                        <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                        <span>复制成功，请联系我吧～</span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- 返回顶部按钮 -->
+    <a href="#home" class="fixed bottom-8 right-8 text-xs tracking-widest text-gu-gray hover:text-gu-black transition-colors uppercase font-light z-50">
+        top ↑
+    </a>
+
+    <!-- 平滑滚动 -->
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+
+    <!-- 技能数据 definition -->
+    <script>
+        const skillData = {
+            personal: {
+                en: "creative tools",
+                cn: "个人能力",
+                desc: "我具备设计思维、用户洞察能力以及内容表达和跨团队协作能力。希望转向内容运营方向，把设计经验和对用户需求的理解结合起来，做更有传播和用户价值的内容。"
+            },
+            aigc: {
+                en: "ai synergy",
+                cn: "AIGC 协同创新",
+                desc: "熟练使用各类 AI 生图 / 声音视频工具，搭建 ComfyUI 自动化内容工作流，批量产出视觉素材"
+            },
+            operations: {
+                en: "operations",
+                cn: "内容运营能力",
+                desc: "内容策划、短视频脚本 / 剪辑、用户调研、内容数据复盘、品牌宣传物料统筹"
+            },
+            general: {
+                en: "general",
+                cn: "通用底层素养",
+                desc: "跨部门项目统筹、竞品内容分析、活动资源协调、相关文档撰写"
+            }
+        };
+
+        function switchSkill(categoryKey, index) {
+            const screen = document.getElementById('laptop-screen-content');
+            
+            screen.style.opacity = '0';
+            
+            setTimeout(() => {
+                const data = skillData[categoryKey];
+                document.getElementById('skill-category-en').innerText = data.en;
+                document.getElementById('skill-category-cn').innerText = data.cn;
+                document.getElementById('skill-category-desc').innerText = data.desc;
+                
+                screen.style.opacity = '1';
+            }, 250);
+
+            document.querySelectorAll('.skill-card').forEach(card => {
+                card.classList.remove('active-skill-card', 'bg-neutral-100', 'border-gu-red/30');
+                card.classList.add('bg-white/95', 'border-neutral-200/50');
+            });
+            const activeCard = document.querySelector(`.skill-card[data-idx="${index}"]`);
+            if (activeCard) {
+                activeCard.classList.add('active-skill-card', 'bg-neutral-100', 'border-gu-red/30');
+                activeCard.classList.remove('bg-white/95', 'border-neutral-200/50');
+            }
+
+            document.querySelectorAll('.skill-dot').forEach(dot => {
+                dot.classList.remove('bg-gu-red');
+                dot.classList.add('bg-neutral-200');
+            });
+            document.getElementById(`dot-${index}`).classList.remove('bg-neutral-200');
+            document.getElementById(`dot-${index}`).classList.add('bg-gu-red');
+
+            for (let i = 0; i < 4; i++) {
+                const iconContainer = document.getElementById('card-icon-container-' + i);
+                if (iconContainer) {
+                    if (i === index) {
+                        iconContainer.classList.remove('text-gu-gray');
+                        iconContainer.classList.add('text-gu-red');
+                    } else {
+                        iconContainer.classList.remove('text-gu-red');
+                        iconContainer.classList.add('text-gu-gray');
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- 工作经历动态交互数据及逻辑 -->
+    <script>
+        const experienceData = [
+            {
+                role: "产品设计管培生",
+                company: "广州凡岛网络科技有限公司",
+                period: "2025.07 - 2026.03",
+                desc: [
+                    "统筹新品牌整体品牌策划与新品营销，负责新品打造、老品升级全流程，输出 brand 传播物料供给线上渠道；",
+                    "牵头线上线下竞品与消费者调研，拆解竞品开品与营销打法，输出 analysis 报告支撑品牌内容与产品策划；",
+                    "协同产品经理落地新品上市方案，提炼产品种草卖点，适配新媒体、电商宣传需求；",
+                    "以项目负责人统筹团队排期与任务分配，管控项目节点并沉淀标准化 brand 内容素材库。"
+                ],
+                highlights: ["品牌策划", "新品营销", "竞品调研", "项目统筹"]
+            },
+            {
+                role: "AI内容生产设计师",
+                company: "北京猫眼文化传媒有限公司",
+                period: "2025.04 - 2025.06",
+                desc: [
+                    "出海教育产品的内容生产制作：利用 AIGC 工具批量产出海外教育产品的图文、短视频素材，提升内容产出效率；",
+                    "搭建与维护自动化 AIGC 内容工作流，标准化视频、图文产出流程，降低内容制作人力成本，稳定供给产品素材。"
+                ],
+                highlights: ["AIGC 自动化", "教育内容", "效率提速", "批量物料"]
+            },
+            {
+                role: "UI设计师",
+                company: "北京一点网聚信息技术有限公司 · 产品部",
+                period: "2024.07 - 2024.11",
+                desc: [
+                    "用户调研与内容触点 analysis：针对社交类产品开展用户行为调研、竞品内容生态拆解，分析用户活跃、流失核心原因，输出 product 优化方案；",
+                    "产品体验优化: 优化 APP 内弹窗、社区封面、个人主页等用户视觉触点内容，提升社区内容点击率与用户停留时长；",
+                    "定期复盘产品及竞品数据，新功能体验评估、迭代内容展示、用户激励视觉方案，提升社区 UGC 发布活跃度."
+                ],
+                highlights: ["用户调研", "视觉触点", "UGC 激励", "数据复盘"]
+            },
+            {
+                role: "AIGC高美感设计师",
+                company: "北京字节跳动科技有限公司 · 中国内容质量与用户体验平台",
+                period: "2023.07 - 2023.12",
+                desc: [
+                    "内容 & 受众调研：针对 platform AIGC 内容赛道开展竞品内容拆解、受众画像与用户痛点分析，输出 content 趋势报告，为 platform 内容运营策略提供参考；",
+                    "内容标准搭建：协同产研团队搭建美学规范与分层标签体系，从 0-1 搭建内容素材数据库与使用手册，统一平台内容产出标准，提升内容产出效率；",
+                    "跨团队协同运营：联动研发、测试、设计团队推进内容体验迭代，跟踪用户反馈优化内容生成效果，降低用户内容差评率；",
+                    "项目统筹管理：跟进项目排期、风险管控，同步各团队内容迭代需求，保障月度内容更新计划按时落地；",
+                    "行业内容追踪：持续调研 AIGC 短视频、图文内容行业动态，输出前沿内容玩法参考，赋能 platform 内容创新运营。"
+                ],
+                highlights: ["美学规范", "受众画像", "跨团队运营", "行业追踪"]
+            },
+            {
+                role: "产品运营设计",
+                company: "北京忆空间文化发展声 · 耳朵里的博物馆",
+                period: "2023.03 - 2023.06",
+                desc: [
+                    "内容运营：独立产出博物馆线上线下宣传全品类视觉物料，包含公众号图文配图、海报封面、线下研学手册等，支撑账号日常内容更新与线下 activity 物料；",
+                    "内容数据复盘：协同 product、运营团队拆解公众号等线上内容阅读、互动数据，定位内容，输出内容 optimization 方案，推动产品线上曝光提升，带动线下 activity 参与率提升。"
+                ],
+                highlights: ["视觉物料", "线上曝光", "活动复盘", "内容运营"]
+            }
+        ];
+
+        function switchExperience(idx) {
+            const board = document.getElementById('exp-detail-board');
+            const descContainer = document.getElementById('exp-detail-desc-container');
+            
+            board.style.opacity = '0';
+            board.style.transform = 'translateY(5px)';
+            
+            setTimeout(() => {
+                const data = experienceData[idx];
+                document.getElementById('exp-detail-role').innerText = data.role;
+                document.getElementById('exp-detail-company').innerText = data.company;
+                document.getElementById('exp-detail-period').innerText = data.period;
+
+                const descUl = document.getElementById('exp-detail-desc');
+                descUl.innerHTML = '';
+                data.desc.forEach(point => {
+                    const li = document.createElement('li');
+                    li.className = "flex items-start gap-2.5";
+                    li.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-2 shrink-0"></span><span>${point}</span>`;
+                    descUl.appendChild(li);
+                });
+
+                if (descContainer) {
+                    descContainer.scrollTop = 0;
+                }
+
+                const highlightsDiv = document.getElementById('exp-highlights');
+                highlightsDiv.innerHTML = '';
+                data.highlights.forEach((h, hIdx) => {
+                    const span = document.createElement('span');
+                    span.className = hIdx === 0 
+                        ? "px-3 py-1 text-xs text-gu-red bg-gu-red/5 rounded-full" 
+                        : "px-3 py-1 text-xs text-neutral-500 bg-neutral-50 rounded-full";
+                    span.innerText = h;
+                    highlightsDiv.appendChild(span);
+                });
+
+                board.style.opacity = '1';
+                board.style.transform = 'translateY(0)';
+            }, 250);
+
+            document.querySelectorAll('.exp-nav-item').forEach(item => {
+                item.classList.remove('active-exp-nav', 'border-gu-red');
+                item.classList.add('border-transparent');
+            });
+            const activeNav = document.getElementById(`exp-nav-${idx}`);
+            if (activeNav) {
+                activeNav.className = "exp-nav-item text-left pl-6 py-4 border-l-2 -ml-[1.5px] border-gu-red text-gu-black transition-all duration-300 group";
+            }
+        }
+
+        function toggleMobileExp(idx) {
+            for (let i = 0; i < 5; i++) {
+                const content = document.getElementById('m-content-' + i);
+                const arrow = document.getElementById('m-arrow-' + i);
+                if (i === idx) {
+                    if (content.classList.contains('hidden')) {
+                        content.classList.remove('hidden');
+                        arrow.classList.add('rotate-180');
+                    } else {
+                        content.classList.add('hidden');
+                        arrow.classList.remove('rotate-180');
+                    }
+                } else {
+                    content.classList.add('hidden');
+                    arrow.classList.remove('rotate-180');
+                }
+            }
+        }
+    </script>
+
+    <!-- macOS 弹窗及点赞处理交互脚本 -->
+    <script>
+        function openMacModal() {
+            const modal = document.getElementById('mac-modal');
+            const win = document.getElementById('mac-window');
+            if (modal && win) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                win.classList.remove('scale-95');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // 绑定明确的点击事件监听器，阻止冒泡以实现双重保险，彻底根治无法关闭的问题
+        function closeMacModal() {
+            const modal = document.getElementById('mac-modal');
+            const win = document.getElementById('mac-window');
+            if (modal && win) {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                win.classList.add('scale-95');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function toggleFullscreen() {
+            const win = document.getElementById('mac-window');
+            if (win) {
+                win.classList.toggle('max-w-5xl');
+                win.classList.toggle('max-w-[96vw]');
+                win.classList.toggle('h-[85vh]');
+                win.classList.toggle('h-[94vh]');
+            }
+        }
+
+        // 小红书仿真点赞交互函数 (支持普通数字和带“k”的数字弹性递增)
+        function likeCard(countId, iconId) {
+            const countEl = document.getElementById(countId);
+            const iconEl = document.getElementById(iconId);
+            let currentLikes = countEl.innerText;
+            let isK = currentLikes.includes('k');
+            
+            if (iconEl.classList.contains('text-neutral-300') || !iconEl.classList.contains('text-gu-red')) {
+                iconEl.classList.remove('text-neutral-300');
+                iconEl.classList.add('text-gu-red', 'scale-125');
+                if (isK) {
+                    let num = parseFloat(currentLikes);
+                    countEl.innerText = (num + 0.1).toFixed(1) + 'k';
+                } else {
+                    countEl.innerText = parseInt(currentLikes) + 1;
+                }
+                countEl.classList.add('text-gu-red');
+            } else {
+                iconEl.classList.remove('text-gu-red', 'scale-125');
+                iconEl.classList.add('text-neutral-300');
+                if (isK) {
+                    let num = parseFloat(currentLikes);
+                    countEl.innerText = (num - 0.1).toFixed(1) + 'k';
+                } else {
+                    countEl.innerText = parseInt(currentLikes) - 1;
+                }
+                countEl.classList.remove('text-gu-red');
+            }
+            setTimeout(() => {
+                iconEl.classList.remove('scale-125');
+            }, 200);
+        }
+
+        function copyText(text) {
+            const tempInput = document.createElement("textarea");
+            tempInput.value = text;
+            tempInput.style.position = "absolute";
+            tempInput.style.left = "-9999px";
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999);
+            try {
+                document.execCommand('copy');
+                const toast = document.getElementById('copy-toast');
+                if (toast) {
+                    if (window.copyToastTimeout) {
+                        clearTimeout(window.copyToastTimeout);
+                    }
+                    toast.classList.remove('opacity-0', 'translate-y-2', 'pointer-events-none');
+                    toast.classList.add('opacity-100', 'translate-y-0');
+                    
+                    window.copyToastTimeout = setTimeout(() => {
+                        toast.classList.remove('opacity-100', 'translate-y-0');
+                        toast.classList.add('opacity-0', 'translate-y-2');
+                        toast.classList.add('pointer-events-none');
+                    }, 2000);
+                }
+            } catch (err) {
+                console.error("复制失败:", err);
+            }
+            document.body.removeChild(tempInput);
+        }
+
+        // 简易多语言动态转换字典
+        const siteTranslations = {
+            cn: {
+                homeTitle: 'resume',
+                menuAbout: 'about me',
+                menuSkills: 'skills',
+                menuExp: 'experience',
+                menuProj: 'project',
+                menuContact: 'contact me',
+                aboutTitle: 'about me',
+                aboutSub: 'My background, education, and credentials<br><span class="text-[11px] text-gu-gray/60">我的个人背景、教育经历与学术荣誉</span>',
+                profileGender: '女',
+                profileCity: '广州',
+                profileDesc: '擅长用敏锐的审美进行视觉传达，用清晰的数据思维驱动内容增长。',
+                academicList: `
+                    <p>2022 设计马拉松大赛 · 银奖</p>
+                    <p>NCDA 全国高校数字艺术大赛 · 三等奖</p>
+                    <p>全国大学生广告艺术大赛 · 全国优秀奖</p>
+                    <p>汉仪第四届字体之星设计大赛 · 入围奖</p>
+                    <p>方正第十届字体设计大赛 · 入围奖</p>
+                    <p>北京服装学院 · 一等奖学金</p>
+                    <p>鲁迅美术学院 · 三等奖学金</p>
+                `,
+                langTitle: '英语 (English)',
+                langDesc: '听说读写良好 · CET-6 (591 分)'
+            },
+            en: {
+                homeTitle: 'resume',
+                menuAbout: 'about me',
+                menuSkills: 'skills',
+                menuExp: 'experience',
+                menuProj: 'project',
+                menuContact: 'contact me',
+                aboutTitle: 'about me',
+                aboutSub: 'My personal background, academic credentials & accolades',
+                profileGender: 'Female',
+                profileCity: 'Guangzhou',
+                profileDesc: 'Aesthetic-driven multi-media art designer, capable of bridging visual communication and operational data growth.',
+                academicList: `
+                    <p>2022 Design Marathon Exhibition · Silver Award</p>
+                    <p>NCDA National College Digital Art Exhibition · 3rd Prize</p>
+                    <p>National College Advertising Art Exhibition · Excellence Award</p>
+                    <p>Hanyi 4th Star of Type Design Competition · Nominated Award</p>
+                    <p>Founder 10th Font Design Competition · Nominated Award</p>
+                    <p>BIFT First-Class Scholarship</p>
+                    <p>LAFA Academic Scholarship Award</p>
+                `,
+                langTitle: 'English (EN)',
+                langDesc: 'Fluent in speaking, writing & reading · CET-6 (Score: 591)'
+            }
+        };
+
+        function setLanguage(lang) {
+            const data = siteTranslations[lang];
+            if (!data) return;
+
+            // 切换语言按钮高亮状态
+            const btnCn = document.getElementById('lang-cn');
+            const btnEn = document.getElementById('lang-en');
+            if (lang === 'cn') {
+                btnCn.className = "text-gu-black font-normal cursor-pointer transition-colors";
+                btnEn.className = "text-gu-gray cursor-pointer hover:text-gu-black transition-colors";
+            } else {
+                btnCn.className = "text-gu-gray cursor-pointer hover:text-gu-black transition-colors";
+                btnEn.className = "text-gu-black font-normal cursor-pointer transition-colors";
+            }
+
+            // 更新DOM内容
+            document.querySelector('[data-cn="resume"]').innerText = data.homeTitle;
+            document.querySelector('[href="#about"]').innerText = data.menuAbout;
+            document.querySelector('[href="#skills"]').innerText = data.menuSkills;
+            document.querySelector('[href="#experience"]').innerText = data.menuExp;
+            document.querySelector('[href="#project"]').innerText = data.menuProj;
+            document.querySelector('[href="#contact"]').innerText = data.menuContact;
+            
+            document.querySelector('[data-cn="about me"]').innerText = data.aboutTitle;
+            document.getElementById('about-sub').innerHTML = data.aboutSub || (lang === 'cn' ? `My background, education, and credentials<br><span class="text-[11px] text-gu-gray/60">我的个人背景、教育经历与学术荣誉</span>` : `My background, education, and credentials`);
+            
+            document.getElementById('profile-gender').innerText = data.profileGender || (lang === 'cn' ? '女' : 'Female');
+            document.getElementById('profile-city').innerText = data.profileCity || (lang === 'cn' ? '广州' : 'Guangzhou');
+            document.getElementById('profile-desc').innerText = data.profileDesc || (lang === 'cn' ? '擅长用敏锐的审美进行视觉传达，用清晰的数据思维驱动内容增长。' : 'Expertise in high-aesthetic art communication, digital media solutions and brand operations.');
+            
+            document.getElementById('academic-list').innerHTML = (lang === 'cn') ? `
+                <p>2022 设计马拉松大赛 · 银奖</p>
+                <p>NCDA 全国高校数字艺术大赛 · 三等奖</p>
+                <p>全国大学生广告艺术大赛 · 全国优秀奖</p>
+                <p>汉仪第四届字体之星设计大赛 · 入围奖</p>
+                <p>方正第十届字体设计大赛 · 入围奖</p>
+                <p>北京服装学院 · 一等奖学金</p>
+                <p>鲁迅美术学院 · 三等奖学金</p>
+            ` : `
+                <p>2022 Design Marathon · Silver Award</p>
+                <p>NCDA National College Digital Art Exhibition · 3rd Prize</p>
+                <p>National College Advertising Art Exhibition · Excellence Award</p>
+                <p>Hanyi 4th Star of Typeface Design · Shortlisted Award</p>
+                <p>Founder 10th Font Design Competition · Shortlisted Award</p>
+                <p>BIFT First-Class Scholarship</p>
+                <p>LAFA Academic Scholarship</p>
+            `;
+
+            document.getElementById('lang-title').innerText = (lang === 'cn') ? '英语 (English)' : 'English';
+            document.getElementById('lang-desc').innerText = (lang === 'cn') ? '听说读写良好 · CET-6 (591 分)' : 'Excellent in listening, speaking, reading, writing · CET-6 (591)';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeMacModal();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const closeMacBtn = document.getElementById('btn-close-mac');
+            if (closeMacBtn) {
+                closeMacBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    closeMacModal();
+                });
+            }
+
+            const folder1 = document.getElementById('folder-design-portfolio');
+            if (folder1) {
+                folder1.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openMacModal();
+                });
+            }
+        });
+    </script>
+
+    <!-- 自定义高级毛玻璃正红色鼠标指针脚本逻辑 -->
+    <script>
+        const dot = document.getElementById('custom-cursor-dot');
+        const ring = document.getElementById('custom-cursor-ring');
+
+        let mouseX = -100;
+        let mouseY = -100;
+        let ringX = -100;
+        let ringY = -100;
+        let isMoving = false;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+
+            if (!isMoving) {
+                dot.style.opacity = '1';
+                ring.style.opacity = '1';
+                isMoving = true;
+            }
+
+            dot.style.left = `${mouseX}px`;
+            dot.style.top = `${mouseY}px`;
+        });
+
+        function animateCursor() {
+            ringX += (mouseX - ringX) * 0.16;
+            ringY += (mouseY - ringY) * 0.16;
+
+            ring.style.left = `${ringX}px`;
+            ring.style.top = `${ringY}px`;
+
+            requestAnimationFrame(animateCursor);
+        }
+        requestAnimationFrame(animateCursor);
+
+        document.addEventListener('mouseleave', () => {
+            dot.style.opacity = '0';
+            ring.style.opacity = '0';
+            isMoving = false;
+        });
+
+        document.addEventListener('mouseenter', () => {
+            dot.style.opacity = '1';
+            ring.style.opacity = '1';
+            isMoving = true;
+        });
+
+        document.addEventListener('mouseover', (e) => {
+            const hoverTarget = e.target.closest('a, button, .group, [role="button"], .cursor-pointer, img, .skill-card, .exp-nav-item, .group\\/folder');
+            if (hoverTarget) {
+                ring.style.transform = 'translate(-50%, -50%) scale(1.6)';
+                ring.style.backgroundColor = 'rgba(255, 0, 0, 0.15)';
+                ring.style.borderColor = 'rgba(255, 0, 0, 0.4)';
+                dot.style.transform = 'translate(-50%, -50%) scale(0.6)';
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            const hoverTarget = e.target.closest('a, button, .group, [role="button"], .cursor-pointer, img, .skill-card, .exp-nav-item, .group\\/folder');
+            if (hoverTarget) {
+                ring.style.transform = 'translate(-50%, -50%) scale(1)';
+                ring.style.backgroundColor = 'rgba(255, 0, 0, 0.05)';
+                ring.style.borderColor = 'rgba(255, 0, 0, 0.2)';
+                dot.style.transform = 'translate(-50%, -50%) scale(1)';
+            }
+        });
+    </script>
+
+    <!-- 支持拖拽滑动的卡片逻辑 -->
+    <script>
+        const slider = document.getElementById('skills-slider');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.classList.add('active');
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+        slider.addEventListener('mouseleave', () => {
+            isDown = false;
+        });
+        slider.addEventListener('mouseup', () => {
+            isDown = false;
+        });
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 1.5; // 滑动系数
+            slider.scrollLeft = scrollLeft - walk;
+        });
+    </script>
+</body>
+</html>
