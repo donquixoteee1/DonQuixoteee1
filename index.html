@@ -171,7 +171,7 @@
             <div class="flex flex-col md:flex-row justify-between items-start w-full mb-20 relative z-10">
                 <div class="flex items-start gap-2">
                     <span class="text-xs font-light text-gu-gray mt-1 md:mt-2 tracking-widest">01</span>
-                    <h2 class="text-4xl md:text-5xl font-normal text-gu-black tracking-tight font-sans" data-cn="about me" data-en="about me">about me</h2>
+                    <h2 class="text-4xl md:text-5xl font-normal text-gu-black tracking-tight font-sans" data-cn="about me" data-en="about me">About me</h2>
                 </div>
                 <div class="mt-4 md:mt-0 text-left md:text-right relative max-w-xs md:self-end">
                     <p class="text-xs md:text-sm text-gu-gray font-light leading-relaxed" id="about-sub">
@@ -184,12 +184,12 @@
             <!-- 经典左右页面布局 -->
             <div class="flex flex-col md:flex-row gap-12 md:gap-16 lg:gap-20 items-start justify-between">
                 
-                <!-- Left Section (已通过 md: 前缀修复手机端模糊问题。手机端默认清晰呈现，电脑端保留悬停清晰滤镜效果) -->
+                <!-- Left Section (彩色画廊默认虚化，悬停平滑清晰显现) -->
                 <div class="w-full md:w-[25%] max-w-[240px] shrink-0 flex flex-col items-start group">
                     <div class="w-full aspect-[4/5] bg-gray-50 mb-2 overflow-hidden relative rounded-md">
                         <img src="https://established-salmon-xy69tsbh.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-18%2016.03.42.png" 
                              alt="GU." 
-                             class="w-full h-full object-cover md:blur-md md:group-hover:blur-none transition-all duration-[800ms] cubic-bezier(0.16, 1, 0.3, 1)" 
+                             class="w-full h-full object-cover blur-md group-hover:blur-none transition-all duration-[800ms] cubic-bezier(0.16, 1, 0.3, 1)" 
                              onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=800'">
                     </div>
                     
@@ -416,7 +416,7 @@
             <!-- 桌面端及平板经典布局 -->
             <div class="hidden md:flex gap-12 items-start justify-between min-h-[460px]">
                 
-                <!-- left侧公司极简标签栏 (已经保留left边栏浅灰色职位名称旁的“· 实习”小字) -->
+                <!-- left侧公司极简标签栏 -->
                 <div class="w-[32%] flex flex-col space-y-3 shrink-0 border-l border-neutral-100">
                     
                     <!-- 凡岛网络 -->
@@ -580,7 +580,7 @@
                             <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>内容标准搭建：协同产研团队搭建美学规范与分层标签体系，从 0-1 搭建内容素材数据库与使用手册，统一平台内容产出标准，提升内容产出效率；</li>
                             <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>跨团队协同运营：联动研发、测试、设计团队推进内容体验迭代，跟踪用户反馈优化内容生成效果，降低用户内容差评率；</li>
                             <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>项目统筹管理：跟进项目排期、风险管控，同步各团队内容迭代需求，保障月度内容更新计划按时落地；</li>
-                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>行业内容追踪：持续调研 AIGC 短视频、图文内容行业动态，输出前沿内容玩法参考，赋能 platform 内容 innovation 运营。</li>
+                            <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-gu-red/60 mt-1.5 shrink-0"></span>行业内容追踪：持续调研 AIGC 短视频、图文内容行业动态，输出前沿内容玩法参考，赋能 platform 内容创新运营。</li>
                         </ul>
                     </div>
                 </div>
@@ -804,7 +804,7 @@
                         <div class="space-y-3.5 border-t border-neutral-100 pt-5 text-xs text-neutral-400 font-light leading-relaxed">
                             <div class="flex items-start gap-2.5">
                                 <span class="text-gu-red text-sm mt-0.5">💡</span>
-                                <span><strong class="text-neutral-700 font-normal">insight:</strong> 深挖艺术/设计学生、考研 student 痛点，通过垂直领域干货输出与可视化图文大纲，精准吸引学生用户群体。</span>
+                                <span><strong class="text-neutral-700 font-normal">insight:</strong> 深挖艺术/设计学生、考研学生痛点，通过垂直领域干货输出与可视化图文大纲，精准吸引学生用户群体。</span>
                             </div>
                             <div class="flex items-start gap-2.5">
                                 <span class="text-gu-red text-sm mt-0.5">📈</span>
@@ -862,7 +862,7 @@
                             </div>
 
                             <!-- 小红书双列滑动瀑布流 (可自由下滑交互，展现 8 张学术干货封面) -->
-                            <!-- 第一个图文卡片改造成了 <a> 链接，点击能够顺利直达指定的个人主页，第一个卡片的图片已修正为学术封面大图，点赞数据、爱心颜色等保留完整 -->
+                            <!-- 第一个图文卡片改造成了 <a> 链接，点击能够顺利直达指定的个人主页，第一个卡片的图片已修正为正确的学术封面大图，点赞数据、爱心颜色等保留完整 -->
                             <div class="flex-1 overflow-y-auto p-2 bg-[#f6f6f6] custom-scrollbar space-y-2 pb-16">
                                 <div class="grid grid-cols-2 gap-2">
                                     
@@ -898,7 +898,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- 卡片 3 (修复错误的图文图片，已成功修改为正确的学术大纲封面图 3) -->
+                                    <!-- 卡片 3 -->
                                     <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col">
                                         <div class="w-full aspect-[4/5] bg-neutral-100 overflow-hidden relative">
                                             <img src="https://mad-teal-fmeg3tdh.edgeone.dev/%E6%88%AA%E5%B1%8F2026-06-21%2020.51.27.png" alt="PPT" class="w-full h-full object-cover">
